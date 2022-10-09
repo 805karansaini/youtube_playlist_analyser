@@ -10,7 +10,6 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
 
-
         <title>Youtube Playlist Analyser</title>
         <link rel="icon" href="https://i.imgur.com/YS6F9Vf.jpeg">
     </head>
@@ -33,51 +32,45 @@
             </nav>
         </header>
         
-        <pre>
-
-        </pre>
-        <!-- <pre> -->
-        <div class="container">
+        <div class="content-section">
             <hr class="my-4">
-            <div class="container">
-                <form method="POST">
-                    <label> Find the length of any YouTube playlist : </label>
-                    <pre></pre>
-                    <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="youtube.com/playlist?list=ID" name="search_string">
-                        <div class="input-group-append">
-                            <button type="submit" class="btn btn-primary">Get Length</button>
+                <div class="container">
+                    <form method="POST">
+                        <label> Find the length of any YouTube playlist : </label>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="youtube.com/playlist?list=ID" name="search_string">
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-primary">Get Length</button>
+                            </div>
                         </div>
-                    </div>
-                    <small id="emailHelp" class="form-text text-muted">
-                    	Please enter a playlist link, playlist ID or a video link from the playlist!
-                    </small>
-                </form>
-            </div>
+                        <small id="emailHelp" class="form-text text-muted">
+                            Please enter a playlist link, playlist ID or a video link from the playlist!
+                        </small>
+                    </form>
+                </div>
             <hr class="my-4">
-            {% if display_text %}
-            <div class="container">
-                {% for x in display_text %}
-                <p>{{x | safe}}</p>
-                {% endfor %}
+                {% if display_text %}
+                    <div class="container">
+                        {% for x in display_text %}
+                        <p>{{x | safe}}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
             </div>
-            {% endif %}
+ 
+        <div class="footer bg-dark">
+            <temp id="sticky-footer" class="py-1 text-white-50">
+                <div class="footer-copyright text-center py-3">
+                    <font size="4" color="white">  
+                        Made with ❤ by <a href="https://github.com/805karansaini/"> Karan Saini</a>
+                    </font>
+                </div>
+                <div class="container text-center text-white" style="padding-bottom:20px;">
+                <a href="https://github.com/805karansaini" target="_blank">Github | </a>
+                <a href="https://www.linkedin.com/in/805karansaini/" target="_blank">Linkedin | </a>
+                <a href="https://github.com/805karansaini/youtube_playlist_analyser" target="_blank">Source Code Link</a>
+                </div>
+            </temp>
         </div>
-        <!-- </pre> -->
-
-
-        <footer id="sticky-footer" class="py-1 bg-dark text-white-50">
-            <div class="footer-copyright text-center py-3">
-                <font color="white">  
-                    Made with ❤ by <a href="https://github.com/805karansaini/"> Karan Saini</a>
-                </font>
-            </div>
-            <div class="container text-center text-white">
-              <a href="https://github.com/805karansaini" target="_blank">Github | </a>
-              <a href="https://www.linkedin.com/in/805karansaini/" target="_blank">Linkedin | </a>
-              <a href="https://github.com/805karansaini/youtube_playlist_analyser" target="_blank">Source Code Link</a>
-            </div>
-        </footer>
-        
     </body>
 </html>
