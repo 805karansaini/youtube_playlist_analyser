@@ -33,6 +33,12 @@ def seconds_to_time(total_seconds):
     minutes, seconds = divmod(total_seconds, 60)
     hours, minutes = divmod(minutes, 60)
     days, hours =  divmod(hours, 24)
+    if days == 0:
+        if hours == 0:
+            if minutes == 0:
+                return f'{int(seconds)} Seconds'
+            return f'{int(minutes)} Minutes, {int(seconds)} Seconds'
+        return f'{int(hours)} Hours, {int(minutes)} Minutes, {int(seconds)} Seconds'
     return f'{int(days)} Days, {int(hours)} Hours, {int(minutes)} Minutes, {int(seconds)} Seconds'
 
 app = Flask(__name__)
