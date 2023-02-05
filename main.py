@@ -59,7 +59,7 @@ def home():
     total_seconds = 0
     nextPageToken = None
     next_page = ''   
-    error_cached = False
+    chart_data = [ [], [] ]
     while True:
         try:
             temp_req = json.loads(requests.get(static_URL.format(api_key, pl_ID) + next_page).text)
@@ -81,15 +81,25 @@ def home():
             vid_ids.append(item['contentDetails']['videoId'])
 
         vid_request = youtube.videos().list(
-            part="contentDetails",
-            id=','.join(vid_ids)
-        )
+                            part="contentDetails",
+                            id=','.join(vid_ids)
+                        )
+
+        title_request = youtube.videos().list(
+                        part="snippet",
+                        id=','.join(vid_ids)
+                    )
+
 
         vid_response = vid_request.execute()
+        title_response = title_request.execute()
 
-        for item in vid_response['items']:
-            duration = item['contentDetails']['duration']
-
+        for item_time, item_title in zip(vid_response['items'], title_response['items']):
+            duration = item_time['contentDetails']['duration']
+            
+            video_title = item_title['snippet']['title']
+            # print(f"Titile is :- {video_title}")
+            
             hours = hours_pattern.search(duration)
             minutes = minutes_pattern.search(duration)
             seconds = seconds_pattern.search(duration)
@@ -105,15 +115,14 @@ def home():
             ).total_seconds()
 
             total_seconds += video_seconds
+            chart_data[0].append(video_title)
+            chart_data[1].append( video_seconds / 60)
 
         nextPageToken = pl_response.get('nextPageToken')
-        vid_counter += len(vid_ids)
+        vid_counter = len(chart_data[1])
         if not nextPageToken:
             break
         
-
-    if error_cached:
-        return render_template("home.html", display_text = display_text)
     display_text = []
     display_text += ['No of videos : ' + str(vid_counter),
         'Average length of a video : ' + seconds_to_time(total_seconds/vid_counter), 
@@ -122,8 +131,8 @@ def home():
         'At 1.50x : ' + seconds_to_time(total_seconds/1.5), 
         'At 1.75x : ' + seconds_to_time(total_seconds/1.75), 
         'At 2.00x : ' + seconds_to_time(total_seconds/2)]
-        # break
-    return render_template("home.html", display_text = display_text)
+
+    return render_template("home.html", display_text = display_text, chart_data = chart_data)
 
 
 if __name__ == "__main__":
