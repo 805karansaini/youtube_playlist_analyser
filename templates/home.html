@@ -1,76 +1,165 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <!-- Required meta tags -->
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        <!-- bootstrap -->
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        <title>Youtube Playlist Analyser</title>
-        <link rel="icon" href="https://i.imgur.com/YS6F9Vf.jpeg">
-    </head>
+    <!-- bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
 
-    <body>
-        <header class="site-header">
-            <nav class="navbar navbar-expand-md navbar-dark bg-light fixed-top">
-                <div class="container">
-                    <a class="navbar-brand mr-4" href="https://ytanalyser.up.railway.app/"><img src="https://i.imgur.com/njh20q7.png" height="60"  alt="logo"></a>
-                    <ul class="navbar-nav ml-auto">
-                        <li class="nav-item active">
-                            <a class="nav-link" href="https://github.com/805karansaini/youtube_playlist_analyser">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60 fill="currentColor" class="bi bi-github" viewBox="0 0 30 30">
-                                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
-                                </svg>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-        </header>
-        
-        <div class="content-section">
-            <hr class="my-4">
-                <div class="container">
-                    <form method="POST">
-                        <label> Find the length of any YouTube playlist : </label>
-                        <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="youtube.com/playlist?list=ID" name="search_string">
-                            <div class="input-group-append">
-                                <button type="submit" class="btn btn-primary">Get Length</button>
-                            </div>
-                        </div>
-                        <small id="emailHelp" class="form-text text-muted">
-                            Please enter a playlist link, playlist ID or a video link from the playlist!
-                        </small>
-                    </form>
-                </div>
-            <hr class="my-4">
-                {% if display_text %}
-                    <div class="container">
-                        {% for x in display_text %}
-                        <p>{{x | safe}}</p>
-                        {% endfor %}
-                    </div>
-                {% endif %}
+    <title>Youtube Playlist Analyser</title>
+    <link rel="icon" href="static\logo_title.jpeg">
+</head>
+
+<body>
+    <header class="site-header">
+        <nav class="navbar navbar-expand-md navbar-dark bg-light fixed-top">
+            <div class="container">
+                <a class="navbar-brand mr-4" href="https://ytanalyser.up.railway.app/"><img src="static\logo.png"
+                        height="60" alt="logo"></a>
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="https://github.com/805karansaini/youtube_playlist_analyser">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60 fill=" currentColor"
+                                class="bi bi-github" viewBox="0 0 30 30">
+                                <path
+                                    d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z" />
+                            </svg>
+                        </a>
+                    </li>
+                </ul>
             </div>
- 
-        <div class="footer bg-dark">
-            <temp id="sticky-footer" class="py-1 text-white-50">
-                <div class="footer-copyright text-center py-3">
-                    <font size="4" color="white">  
-                        Made with ❤ by <a href="https://github.com/805karansaini/"> Karan Saini</a>
-                    </font>
+        </nav>
+    </header>
+
+    <div class="content-section">
+        <hr class="my-4">
+        <div class="container">
+            <form method="POST">
+                <label> Find the length of any YouTube playlist : </label>
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="youtube.com/playlist?list=ID"
+                        name="search_string">
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-primary">Get Length</button>
+                    </div>
                 </div>
-                <div class="container text-center text-white" style="padding-bottom:20px;">
+                <small id="emailHelp" class="form-text text-muted">
+                    Please enter a playlist link, playlist ID or a video link from the playlist!
+                </small>
+            </form>
+        </div>
+
+        <!-- Displaying the display text received for the rendering -->
+        {% if display_text %}
+        <hr class="my-4">
+        <div class="container">
+            {% for x in display_text %}
+            <p>{{x | safe}}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- If Chart Data is received, display the chart -->
+        {% if chart_data %}
+        <div class="container" style="position: relative; height:60vh; width:80vw">
+            <canvas id="myChart"></canvas>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+
+            // Chart data
+            const data = {
+                labels: {{ chart_data[0]| tojson | safe }},
+            datasets: [{
+                label: 'Time (mins)',
+                data: {{ chart_data[1]| tojson | safe }},
+                backgroundColor: 'rgba(255, 99, 156, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 3
+                        }]
+                    };
+
+            // Chart config 
+            const config = {
+                type: 'bar',
+                data,
+                options: {
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: "Videos in Playlist"
+                            },
+                            ticks: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: "Length of Videos (HH:MM:SS)"
+                            },
+                            ticks: {
+                                callback(value, index, values) {
+                                    let hours = parseInt(value / 60).toString().padStart(2, 0)
+                                    let minutes = (parseInt(value)).toString().padStart(2, 0)
+                                    let delta = (value - parseInt(value)) * 60
+                                    let seconds = (parseInt(delta)).toString().padStart(2, 0)
+                                    return `${hours}:${minutes}:${seconds}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            // Render init block, creating canvas
+            const ctx = new Chart(
+                document.getElementById('myChart'),
+                config
+            );
+
+            // Adjusting Height and width of the canvas acc. to window size
+            window.onresize = function () {
+                ctx.width = window.innerWidth;
+                ctx.height = window.innerHeight;
+                window.onresize();
+            };
+        </script>
+
+        {% endif %}
+
+    </div>
+
+    <div class="footer bg-dark">
+        <temp id="sticky-footer" class="py-1 text-white-50">
+            <div class="footer-copyright text-center py-3">
+                <font size="4" color="white">
+                    Made with ❤ by <a href="https://github.com/805karansaini/"> Karan Saini</a>
+                </font>
+            </div>
+            <div class="container text-center text-white" style="padding-bottom:20px;">
                 <a href="https://github.com/805karansaini" target="_blank">Github | </a>
                 <a href="https://www.linkedin.com/in/805karansaini/" target="_blank">Linkedin | </a>
-                <a href="https://github.com/805karansaini/youtube_playlist_analyser" target="_blank">Source Code Link</a>
-                </div>
-            </temp>
-        </div>
-    </body>
+                <a href="https://github.com/805karansaini/youtube_playlist_analyser" target="_blank">Source Code
+                    Link</a>
+            </div>
+        </temp>
+    </div>
+</body>
+
 </html>
