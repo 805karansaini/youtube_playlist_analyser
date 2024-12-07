@@ -23,4 +23,4 @@ app = Flask(__name__)
 app.register_blueprint(home_routes.bp)
 
 if __name__ == "__main__":
-    app.run(use_reloader=True, debug=False)
+    app.run(port=5000, use_reloader=True, debug=False)
