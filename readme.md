@@ -93,3 +93,5 @@ Documentation is built using MkDocs. To view the documentation locally:
 ```bash
 mkdocs serve
 ```
+
+You can also view the documentation online at: [https://805karansaini.github.io/youtube_playlist_analyser/](https://805karansaini.github.io/youtube_playlist_analyser/)
