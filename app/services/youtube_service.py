@@ -41,10 +41,9 @@ class YouTubeService:
         total_seconds = 0
         video_data = []
         next_page_token = ""
-        run = 1
+
         while True:
             try:
-                print(f"Run: {run}")
                 items = self._get_playlist_page(playlist_id, next_page_token)
                 video_info = self._process_videos(items)
 
@@ -60,7 +59,6 @@ class YouTubeService:
                 next_page_token = items.get("nextPageToken")
                 if not next_page_token:
                     break
-                run += 1
             except Exception as e:
                 raise ValueError(f"Error fetching playlist: {str(e)}")
 
