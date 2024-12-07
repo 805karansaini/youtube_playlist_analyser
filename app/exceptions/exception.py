@@ -14,4 +14,11 @@ class InvalidYoutubePlaylistLink(Exception):
         >>> raise InvalidYoutubePlaylistLink("The provided URL is not a valid YouTube playlist link")
     """
 
-    pass
+    def __init__(self, message=None):
+        """Initialize the InvalidYoutubePlaylistLink exception.
+
+        Args:
+            message (str, optional): Custom error message explaining why the playlist link is invalid.
+                Defaults to None.
+        """
+        super().__init__(message)

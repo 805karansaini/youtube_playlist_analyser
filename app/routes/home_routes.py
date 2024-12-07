@@ -19,9 +19,6 @@ def home() -> str:
     """This route function serves the home page of the application by rendering
     the 'home.html' template.
 
-    Args:
-        None
-
     Returns:
         str: The rendered HTML content of the home page.
 
@@ -38,9 +35,6 @@ def analyze_playlist() -> str:
     This function processes a YouTube playlist URL submitted via POST request,
     extracts playlist information, and returns analyzed data including video count,
     durations, and playback speed calculations.
-
-    Args:
-        None (gets data from request.form)
 
     Returns:
         str: Rendered HTML template containing:
