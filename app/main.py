@@ -1,3 +1,12 @@
+"""Initialize and configure the Flask application.
+
+This module serves as the entry point for the YouTube Playlist Analyzer application.
+It handles the basic Flask app configuration, logging setup, and blueprint registration.
+
+Typical usage example:
+    python main.py
+"""
+
 import logging
 
 from flask import Flask

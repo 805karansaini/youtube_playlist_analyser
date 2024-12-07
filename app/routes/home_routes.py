@@ -1,7 +1,7 @@
 import logging
 
 from core.config import Config
-from exceptions.exception import InvalidPlaylistLink
+from exceptions.exception import InvalidYoutubePlaylistLink
 from flask import Blueprint, render_template, request
 from helper.utils import format_duration
 from services.youtube_service import YouTubeService
@@ -16,11 +16,18 @@ youtube_service = YouTubeService(config)
 
 @bp.route("/", methods=["GET"])
 def home() -> str:
-    """
-    Handle home page requests.
+    """This route function serves the home page of the application by rendering
+    the 'home.html' template.
+
+    Args:
+        None
 
     Returns:
-        str: Rendered HTML template for the home page.
+        str: The rendered HTML content of the home page.
+
+    Example:
+        When accessing the root URL ('/'), this function will be called and
+        return the rendered home page template.
     """
     return render_template("home.html")
 
@@ -28,10 +35,28 @@ def home() -> str:
 @bp.route("/", methods=["POST"])
 def analyze_playlist() -> str:
     """
-    Handle POST requests to analyze YouTube playlist.
+    This function processes a YouTube playlist URL submitted via POST request,
+    extracts playlist information, and returns analyzed data including video count,
+    durations, and playback speed calculations.
+
+    Args:
+        None (gets data from request.form)
 
     Returns:
-        str: Rendered HTML template with playlist analysis results.
+        str: Rendered HTML template containing:
+            - Playlist statistics (video count, average length, total duration)
+            - Playback duration at different speeds (1.25x - 2.00x)
+            - Chart data with video titles and durations
+
+    Raises:
+        InvalidYoutubePlaylistLink: If the provided playlist URL is invalid or malformed
+        Exception: For any other unexpected errors during processing
+
+    Example usage:
+        POST / with form data containing:
+        {
+            "search_string": "https://www.youtube.com/playlist?list=PLAYLIST_ID"
+        }
     """
     try:
         user_link = request.form.get("search_string", "").strip()
@@ -61,7 +86,7 @@ def analyze_playlist() -> str:
             "home.html", display_text=display_text, chart_data=chart_data
         )
 
-    except InvalidPlaylistLink as e:
+    except InvalidYoutubePlaylistLink as e:
         logger.error(f"Invalid playlist error: {str(e)}")
         return render_template(
             "home.html",
