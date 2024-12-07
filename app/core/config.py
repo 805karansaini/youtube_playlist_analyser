@@ -21,3 +21,7 @@ class Config(BaseSettings):
     YOUTUBE_API_VERSION: str = "v3"
     MAX_RESULTS: PositiveInt = 50
     STATIC_URL: str = "https://www.googleapis.com/youtube/v3/playlistItems"
+
+    class Config:
+        env_file = ".env"
+        env_file_encoding = "utf-8"

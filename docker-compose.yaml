@@ -1,0 +1,26 @@
+# Docker Compose file for YouTube Playlist Analyzer application
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: youtube-playlist-analyzer-web
+    restart: unless-stopped
+    ports:
+      - "5000:5001"
+    environment:
+      - FLASK_APP=main.py
+      - FLASK_ENV=production
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
+    env_file:
+      - .env
+    volumes:
+      - ./app:/youtube_playlist_analyser/app
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:5000/" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
