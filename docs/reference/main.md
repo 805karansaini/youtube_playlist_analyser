@@ -1,0 +1,3 @@
+# Main Documentation
+
+::: app.main
