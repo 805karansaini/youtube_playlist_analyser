@@ -4,7 +4,12 @@ body {
   margin-top: 5rem;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   color: #444444;
 }
 
@@ -36,18 +41,20 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: 20px;
 }
 
-.footer, .push {
-  height: 60; /* .push must be the same height as .footer */
+.footer,
+.push {
+  height: 60;
+  /* .push must be the same height as .footer */
 }
 
 footer {
   background: rgb(27, 1, 1);
-  padding-top: 3px; 
+  padding-top: 3px;
   position: absolute;
   height: 60px;
   width: 100%;
   overflow: hidden;
   left: 0;
   margin-bottom: 0;
-  bottom: 0; 
+  bottom: 0;
 }
