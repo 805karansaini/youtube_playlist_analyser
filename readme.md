@@ -1,6 +1,8 @@
 # YouTube Playlist Analyzer
 
-A web application that analyzes YouTube playlists to provide insights about video counts, durations, and playback speed calculations.
+YouTube Playlist Analyzer is a web application designed to help you gain insights into your YouTube playlists. With this tool, you can analyze playlists to determine the number of videos, total duration, and playback speed adjustments, all presented with **interactive charts** to help you visualize the data effectively.
+
+Explore it live here: [YouTube Playlist Analyzer](https://ytanalyser.up.railway.app/)
 
 ## Features
 
@@ -31,14 +33,14 @@ A web application that analyzes YouTube playlists to provide insights about vide
    ```
 
 3. Activate the virtual environment:
-   - On Windows:
-     ```bash
-     .venv\Scripts\activate
-     ```
-   - On macOS/Linux:
-     ```bash
-     source .venv/bin/activate
-     ```
+      - On Windows:
+      ```bash
+      .venv\Scripts\activate
+      ```
+      - On macOS/Linux:
+      ```bash
+      source .venv/bin/activate
+      ```
 
 4. Create a `.env` file with your YouTube API key:
    ```bash
@@ -81,10 +83,10 @@ A web application that analyzes YouTube playlists to provide insights about vide
 1. Access the application at `http://localhost:5000`.
 2. Enter a YouTube playlist URL.
 3. View the analysis results, including:
-   - Total number of videos
-   - Average video length
-   - Total playlist duration
-   - Estimated watching time at different speeds
+      - Total number of videos
+      - Average video length
+      - Total playlist duration
+      - Estimated watching time at different speeds
 
 ## Documentation
 
