@@ -1,0 +1,20 @@
+{
+    "version": 2,
+    "builds": [
+        {
+            "src": "app/main.py",
+            "use": "@vercel/python"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "app/main.py"
+        }
+    ],
+    "env": {
+        "FLASK_APP": "app/main.py",
+        "FLASK_ENV": "production",
+        "PYTHONPATH": "/var/task/app"
+    }
+}
