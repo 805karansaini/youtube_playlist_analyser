@@ -1,0 +1,397 @@
+{% extends "base.html" %}
+
+{% block title %}Download Analysis - YouTube Playlist Analyzer{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Hero Section -->
+    <div class="row mb-5">
+        <div class="col-lg-8 mx-auto text-center">
+            <div class="hero-content fade-in">
+                <h1 class="display-5 mb-4 text-gradient font-weight-bold">
+                    <i class="fas fa-download text-primary mr-3"></i>
+                    Download Analysis
+                </h1>
+                <p class="lead text-muted mb-4">
+                    Export your playlist analysis in multiple professional formats.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <div class="card border-0 shadow-lg">
+                <div class="card-header text-center">
+                    <h4 class="mb-0">
+                        <i class="fas fa-file-export mr-2"></i>
+                        Playlist Analysis Export
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+                    <div class="alert alert-info border-0 shadow-sm" style="border-left: 4px solid var(--primary-color) !important;">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-info-circle text-primary mr-2"></i>
+                            <div>
+                                <strong>Playlist ID:</strong> <code class="bg-light px-2 py-1 rounded">{{ playlist_id }}</code>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center mb-4">
+                        <h5 class="font-weight-600 mb-2">Choose Export Format</h5>
+                        <p class="text-muted mb-0">Select your preferred format to download the analysis data</p>
+                    </div>
+
+                    <!-- Download Options -->
+                    <div class="row">
+                        <div class="col-lg-6 mb-4">
+                            <div class="download-card h-100">
+                                <div class="card-body text-center p-4">
+                                    <div class="download-icon mb-3">
+                                        <i class="fas fa-file-csv fa-4x text-success"></i>
+                                    </div>
+                                    <h5 class="font-weight-600 mb-3">CSV Format</h5>
+                                    <p class="text-muted mb-4">
+                                        Raw data in comma-separated format. Perfect for spreadsheet applications and data analysis.
+                                    </p>
+                                    <button class="btn btn-outline-success btn-lg btn-block" onclick="downloadFormat('csv')">
+                                        <i class="fas fa-download mr-2"></i> Download CSV
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6 mb-4">
+                            <div class="download-card h-100">
+                                <div class="card-body text-center p-4">
+                                    <div class="download-icon mb-3">
+                                        <i class="fas fa-file-excel fa-4x text-success"></i>
+                                    </div>
+                                    <h5 class="font-weight-600 mb-3">Excel Format</h5>
+                                    <p class="text-muted mb-4">
+                                        Formatted spreadsheet with charts and styling. Includes summary sheets and visualizations.
+                                    </p>
+                                    <button class="btn btn-outline-success btn-lg btn-block" onclick="downloadFormat('excel')">
+                                        <i class="fas fa-download mr-2"></i> Download Excel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6 mb-4">
+                            <div class="download-card h-100">
+                                <div class="card-body text-center p-4">
+                                    <div class="download-icon mb-3">
+                                        <i class="fas fa-file-code fa-4x text-info"></i>
+                                    </div>
+                                    <h5 class="font-weight-600 mb-3">JSON Format</h5>
+                                    <p class="text-muted mb-4">
+                                        Structured data in JSON format. Ideal for developers and programmatic data processing.
+                                    </p>
+                                    <button class="btn btn-outline-info btn-lg btn-block" onclick="downloadFormat('json')">
+                                        <i class="fas fa-download mr-2"></i> Download JSON
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6 mb-4">
+                            <div class="download-card h-100">
+                                <div class="card-body text-center p-4">
+                                    <div class="download-icon mb-3">
+                                        <i class="fas fa-file-pdf fa-4x text-danger"></i>
+                                    </div>
+                                    <h5 class="font-weight-600 mb-3">PDF Report</h5>
+                                    <p class="text-muted mb-4">
+                                        Professional report with charts, analysis, and formatted presentation. Great for sharing.
+                                    </p>
+                                    <button class="btn btn-outline-danger btn-lg btn-block" onclick="downloadFormat('pdf')">
+                                        <i class="fas fa-download mr-2"></i> Download PDF
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Analysis Options -->
+                    <div class="mt-5">
+                        <div class="card border-0 bg-light">
+                            <div class="card-body p-4">
+                                <h6 class="font-weight-600 mb-3">
+                                    <i class="fas fa-cog mr-2"></i>
+                                    Export Options
+                                </h6>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="analysisType" class="font-weight-500">Analysis Type:</label>
+                                            <select class="form-control" id="analysisType">
+                                                <option value="basic">Basic Analysis</option>
+                                                <option value="detailed">Detailed Analysis</option>
+                                                <option value="trends">Trends Analysis</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="font-weight-500">JSON Formatting:</label>
+                                            <div class="custom-control custom-switch mt-2">
+                                                <input type="checkbox" class="custom-control-input" id="prettyJson" checked>
+                                                <label class="custom-control-label" for="prettyJson">
+                                                    Pretty formatted (readable)
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Status Messages -->
+                    <div id="downloadStatus" class="mt-4" style="display: none;">
+                        <div class="alert border-0 shadow-sm" id="statusAlert">
+                            <span id="statusMessage"></span>
+                        </div>
+                    </div>
+
+                    <!-- Back Button -->
+                    <div class="mt-5 text-center">
+                        <a href="{{ url_for('home.home') }}" class="btn btn-outline-primary btn-lg px-4">
+                            <i class="fas fa-arrow-left mr-2"></i> Back to Analyzer
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Format Information -->
+            <div class="card border-0 shadow-lg mt-5">
+                <div class="card-header text-center">
+                    <h5 class="mb-0 font-weight-600">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        Format Information
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <div class="format-info-card">
+                                <h6 class="font-weight-600 text-success mb-3">
+                                    <i class="fas fa-file-csv mr-2"></i>CSV
+                                </h6>
+                                <ul class="list-unstyled text-muted">
+                                    <li><i class="fas fa-check text-success mr-2"></i>Plain text format</li>
+                                    <li><i class="fas fa-check text-success mr-2"></i>Compatible with Excel, Google Sheets</li>
+                                    <li><i class="fas fa-check text-success mr-2"></i>Lightweight and fast</li>
+                                    <li><i class="fas fa-check text-success mr-2"></i>Good for data analysis</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="format-info-card">
+                                <h6 class="font-weight-600 text-success mb-3">
+                                    <i class="fas fa-file-excel mr-2"></i>Excel
+                                </h6>
+                                <ul class="list-unstyled text-muted">
+                                    <li><i class="fas fa-check text-success mr-2"></i>Multiple worksheets</li>
+                                    <li><i class="fas fa-check text-success mr-2"></i>Built-in charts and formatting</li>
+                                    <li><i class="fas fa-check text-success mr-2"></i>Professional presentation</li>
+                                    <li><i class="fas fa-check text-success mr-2"></i>Advanced Excel features</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="format-info-card">
+                                <h6 class="font-weight-600 text-info mb-3">
+                                    <i class="fas fa-file-code mr-2"></i>JSON
+                                </h6>
+                                <ul class="list-unstyled text-muted">
+                                    <li><i class="fas fa-check text-info mr-2"></i>Machine-readable format</li>
+                                    <li><i class="fas fa-check text-info mr-2"></i>Perfect for APIs and programming</li>
+                                    <li><i class="fas fa-check text-info mr-2"></i>Structured and hierarchical</li>
+                                    <li><i class="fas fa-check text-info mr-2"></i>Includes metadata</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="format-info-card">
+                                <h6 class="font-weight-600 text-danger mb-3">
+                                    <i class="fas fa-file-pdf mr-2"></i>PDF Report
+                                </h6>
+                                <ul class="list-unstyled text-muted">
+                                    <li><i class="fas fa-check text-danger mr-2"></i>Professional document</li>
+                                    <li><i class="fas fa-check text-danger mr-2"></i>Charts and visualizations</li>
+                                    <li><i class="fas fa-check text-danger mr-2"></i>Ready for printing/sharing</li>
+                                    <li><i class="fas fa-check text-danger mr-2"></i>Executive summary included</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<style>
+.download-card {
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    transition: all 0.3s ease;
+}
+
+.download-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-lg);
+}
+
+.download-icon {
+    opacity: 0.8;
+    transition: all 0.3s ease;
+}
+
+.download-card:hover .download-icon {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.format-info-card {
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: var(--border-radius);
+    height: 100%;
+}
+
+.hero-content {
+    padding: 2rem 0;
+}
+
+@media (max-width: 768px) {
+    .hero-content {
+        padding: 1rem 0;
+    }
+    
+    .display-5 {
+        font-size: 2rem;
+    }
+}
+</style>
+
+<script>
+function showStatus(message, type = 'info') {
+    const statusDiv = document.getElementById('downloadStatus');
+    const alertDiv = document.getElementById('statusAlert');
+    const messageSpan = document.getElementById('statusMessage');
+
+    alertDiv.className = `alert alert-${type}`;
+    messageSpan.innerHTML = message;
+    statusDiv.style.display = 'block';
+
+    if (type === 'success') {
+        setTimeout(() => {
+            statusDiv.style.display = 'none';
+        }, 5000);
+    }
+}
+
+function downloadFormat(format) {
+    const playlistId = '{{ playlist_id }}';
+    const analysisType = document.getElementById('analysisType').value;
+    const prettyJson = document.getElementById('prettyJson').checked;
+
+    // Construct playlist URL
+    const playlistUrl = `https://www.youtube.com/playlist?list=${playlistId}`;
+
+    // Find the button and show loading state
+    const button = event.target;
+    const originalText = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Downloading...';
+    button.disabled = true;
+
+    showStatus('<i class="fas fa-spinner fa-spin"></i> Preparing download...', 'info');
+
+    // Prepare request data
+    const requestData = {
+        playlist_url: playlistUrl,
+        analysis_type: analysisType
+    };
+
+    if (format === 'json') {
+        requestData.pretty = prettyJson;
+    }
+
+    // Make download request
+    fetch(`/api/export/${format}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData)
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(err => {
+                throw new Error(err.error || 'Download failed');
+            });
+        }
+        return response.blob();
+    })
+    .then(blob => {
+        // Create download link
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+
+        // Set filename based on format
+        const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+        let filename = `playlist_${playlistId}_${timestamp}`;
+
+        switch (format) {
+            case 'excel':
+                filename += '.xlsx';
+                break;
+            case 'json':
+                filename += '.json';
+                break;
+            case 'pdf':
+                filename += '.pdf';
+                break;
+            default:
+                filename += '.csv';
+        }
+
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+
+        showStatus(`<i class="fas fa-check-circle"></i> Download completed: ${filename}`, 'success');
+
+        // Reset button
+        button.innerHTML = originalText;
+        button.disabled = false;
+    })
+    .catch(error => {
+        console.error('Download failed:', error);
+        showStatus(`<i class="fas fa-exclamation-triangle"></i> Download failed: ${error.message}`, 'danger');
+
+        // Reset button
+        button.innerHTML = originalText;
+        button.disabled = false;
+    });
+}
+
+// Auto-hide status messages
+document.addEventListener('DOMContentLoaded', function() {
+    // Add tooltips to format cards
+    $('[data-toggle="tooltip"]').tooltip();
+});
+</script>
+{% endblock %}
