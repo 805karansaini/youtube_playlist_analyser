@@ -8,19 +8,31 @@ Typical usage example:
 """
 
 import logging
+import os
 
-from flask import Flask
-from routes import home_routes
+from app_factory import create_app
+from middleware.logging_middleware import setup_logging_middleware
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
 logger = logging.getLogger(__name__)
 
-# Initialize Flask app
-app = Flask(__name__)
+# Create Flask app using the Application Factory pattern
+app = create_app()
 
-# Register Blueprints
-app.register_blueprint(home_routes.bp)
+# Set up middleware
+setup_logging_middleware(app)
 
 if __name__ == "__main__":
-    app.run(port=5000, use_reloader=True, debug=False)
+    # Get port from environment variable or use default
+    port = int(os.environ.get("PORT", 8090))
+
+    # Run the app
+    app.run(
+        host="0.0.0.0",  # Allow connections from any host
+        port=port,
+        use_reloader=True,
+        debug=False,
+    )

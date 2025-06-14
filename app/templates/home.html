@@ -1,164 +1,1119 @@
-<!doctype html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <!-- Required meta tags -->
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+{% block content %}
+<div class="container">
+    <!-- Hero Section -->
+    <div class="row mb-5">
+        <div class="col-lg-8 mx-auto text-center">
+            <div class="hero-content fade-in">
+                <h1 class="display-4 mb-4 text-gradient font-weight-bold">
+                    <i class="fab fa-youtube text-danger mr-3"></i>
+                    YouTube Playlist Analyzer
+                </h1>
+                <p class="lead text-muted mb-4">
+                    Analyze YouTube playlists instantly. Get detailed insights about video durations,
+                    view counts, engagement metrics, and export comprehensive reports.
+                </p>
+            </div>
+        </div>
+    </div>
 
-    <!-- bootstrap -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+    <!-- Playlist Input Form -->
+    <div class="row mb-5">
+        <div class="col-lg-10 mx-auto">
+            <div class="card border-0 shadow-lg fade-in">
+                <div class="card-header text-center">
+                    <h4 class="mb-0">
+                        <i class="fas fa-search mr-2"></i>
+                        Analyze Your Playlist
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" id="analyzeForm">
+                        <div class="form-group">
+                            <label for="search_string" class="font-weight-600 text-dark mb-3">
+                                Enter YouTube Playlist URL:
+                            </label>
+                            <div class="input-group input-group-lg">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text bg-primary text-white border-0">
+                                        <i class="fab fa-youtube"></i>
+                                    </span>
+                                </div>
+                                <input type="text" class="form-control border-0 shadow-sm"
+                                       placeholder="https://www.youtube.com/playlist?list=PLMCXHnjXnTnt-aA0yHoa6QcVdQ0Mu3g9j"
+                                       name="search_string" id="search_string" required>
+                                <div class="input-group-append">
+                                    <button type="submit" class="btn btn-primary btn-lg px-4">
+                                        <i class="fas fa-chart-bar mr-2"></i>
+                                        Analyze Now
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                    <small class="form-text text-muted">
+                                        <i class="fas fa-info-circle text-primary mr-1"></i>
+                                        Supports playlist URLs, playlist IDs, or video URLs from the playlist
+                                    </small>
+                                </div>
+                                <div class="col-md-6 text-md-right">
+                                    <small class="form-text text-muted">
+                                        <i class="fas fa-lock text-success mr-1"></i>
+                                        Secure processing - No data stored
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <title>Youtube Playlist Analyser</title>
-    <link rel="icon" href="static\logo_title.jpeg">
-</head>
+    <!-- Loading Spinner -->
+    <div class="loading-spinner" id="loadingSpinner">
+        <div class="card border-0 shadow-lg">
+            <div class="card-body text-center py-5">
+                <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
+                    <span class="sr-only">Analyzing playlist...</span>
+                </div>
+                <h5 class="text-primary mb-2">Analyzing Playlist</h5>
+                <p class="text-muted mb-0">Please wait while we process your playlist data...</p>
+                <div class="progress mt-3" style="height: 6px;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated"
+                         role="progressbar" style="width: 100%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<body>
-    <header class="site-header">
-        <nav class="navbar navbar-expand-md navbar-dark bg-light fixed-top">
-            <div class="container">
-                <a class="navbar-brand mr-4" href="https://ytanalyser.up.railway.app/"><img src="static\logo.png"
-                        height="60" alt="logo"></a>
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="https://github.com/805karansaini/youtube_playlist_analyser">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60 fill=" currentColor"
-                                class="bi bi-github" viewBox="0 0 30 30">
-                                <path
-                                    d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z" />
-                            </svg>
+    <!-- Results Section -->
+    {% if display_text %}
+    <div class="row mb-4">
+        <div class="col-lg-10 mx-auto">
+            <div class="alert alert-info border-0 shadow-sm fade-in" style="border-left: 4px solid var(--primary-color) !important;">
+                <div class="d-flex align-items-center mb-2">
+                    <i class="fas fa-info-circle text-primary mr-2"></i>
+                    <h6 class="mb-0 font-weight-600">Analysis Results</h6>
+                </div>
+                {% for x in display_text %}
+                <p class="mb-2">{{x | safe}}</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Analytics Dashboard -->
+    {% if analysis_data %}
+    <!-- Key Metrics -->
+    <div class="row mb-5">
+        <div class="col-lg-12">
+            <div class="text-center mb-4">
+                <h2 class="text-gradient font-weight-bold mb-2">
+                    <i class="fas fa-chart-line mr-2"></i>
+                    Playlist Analytics Dashboard
+                </h2>
+                <p class="text-muted">Comprehensive insights and metrics for your YouTube playlist</p>
+            </div>
+
+            <div class="analytics-grid fade-in">
+                <div class="metric-card">
+                    <div class="mb-3">
+                        <i class="fas fa-play-circle text-primary" style="font-size: 2rem;"></i>
+                    </div>
+                    <div class="metric-value">{{ analysis_data.video_count | default(0) }}</div>
+                    <div class="metric-label">Total Videos</div>
+                </div>
+                <div class="metric-card">
+                    <div class="mb-3">
+                        <i class="fas fa-clock text-warning" style="font-size: 2rem;"></i>
+                    </div>
+                    <div class="metric-value">{{ analysis_data.total_duration | default('N/A') }}</div>
+                    <div class="metric-label">Total Duration</div>
+                </div>
+                <div class="metric-card">
+                    <div class="mb-3">
+                        <i class="fas fa-eye text-info" style="font-size: 2rem;"></i>
+                    </div>
+                    <div class="metric-value">{{ '{:,}'.format(analysis_data.total_views | default(0)) }}</div>
+                    <div class="metric-label">Total Views</div>
+                </div>
+                <div class="metric-card">
+                    <div class="mb-3">
+                        <i class="fas fa-thumbs-up text-success" style="font-size: 2rem;"></i>
+                    </div>
+                    <div class="metric-value">{{ '{:,}'.format(analysis_data.total_likes | default(0)) }}</div>
+                    <div class="metric-label">Total Likes</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Section -->
+    <div class="row mb-5">
+        <div class="col-lg-10 mx-auto">
+            <div class="export-section fade-in">
+                <div class="text-center mb-4">
+                    <h4 class="font-weight-600 mb-2">
+                        <i class="fas fa-download text-primary mr-2"></i>
+                        Export Your Analysis
+                    </h4>
+                    <p class="text-muted mb-0">Download your playlist analysis in professional formats</p>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <button type="button" class="btn btn-outline-success btn-block export-btn py-3" onclick="exportData('csv')">
+                            <i class="fas fa-file-csv fa-2x mb-2 d-block"></i>
+                            <strong>CSV</strong><br>
+                            <small>Spreadsheet Data</small>
+                        </button>
+                    </div>
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <button type="button" class="btn btn-outline-success btn-block export-btn py-3" onclick="exportData('excel')">
+                            <i class="fas fa-file-excel fa-2x mb-2 d-block"></i>
+                            <strong>Excel</strong><br>
+                            <small>With Charts</small>
+                        </button>
+                    </div>
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <button type="button" class="btn btn-outline-info btn-block export-btn py-3" onclick="exportData('json')">
+                            <i class="fas fa-file-code fa-2x mb-2 d-block"></i>
+                            <strong>JSON</strong><br>
+                            <small>Raw Data</small>
+                        </button>
+                    </div>
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <button type="button" class="btn btn-outline-danger btn-block export-btn py-3" onclick="exportData('pdf')">
+                            <i class="fas fa-file-pdf fa-2x mb-2 d-block"></i>
+                            <strong>PDF</strong><br>
+                            <small>Full Report</small>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Visual Analytics Charts Section -->
+    <div class="row mb-5">
+        <div class="col-lg-12">
+            <div class="text-center mb-4">
+                <h3 class="text-gradient font-weight-bold mb-2">
+                    <i class="fas fa-chart-bar mr-2"></i>
+                    Visual Analytics
+                </h3>
+                <p class="text-muted">Interactive charts and insights about your playlist content</p>
+            </div>
+
+            <!-- Chart Navigation -->
+            <div class="card border-0 shadow-lg">
+                <ul class="nav nav-tabs nav-justified border-0" id="chartTabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="performance-tab" data-toggle="tab" href="#performance" role="tab">
+                            <i class="fas fa-chart-bar mr-2"></i> Top Videos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="engagement-tab" data-toggle="tab" href="#engagement" role="tab">
+                            <i class="fas fa-heart mr-2"></i> Engagement
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="distribution-tab" data-toggle="tab" href="#distribution" role="tab">
+                            <i class="fas fa-chart-pie mr-2"></i> View Distribution
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="timeline-tab" data-toggle="tab" href="#timeline" role="tab">
+                            <i class="fas fa-chart-line mr-2"></i> Timeline
                         </a>
                     </li>
                 </ul>
-            </div>
-        </nav>
-    </header>
 
-    <div class="content-section">
-        <hr class="my-4">
-        <div class="container">
-            <form method="POST">
-                <label> Find the length of any YouTube playlist : </label>
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="youtube.com/playlist?list=ID"
-                        name="search_string">
-                    <div class="input-group-append">
-                        <button type="submit" class="btn btn-primary">Get Length</button>
+                <!-- Chart Content -->
+                <div class="tab-content" id="chartTabContent">
+                    <div class="tab-pane fade show active" id="performance" role="tabpanel">
+                        <div class="chart-wrapper">
+                            <div class="chart-header text-center mb-3">
+                                <h5 class="font-weight-600 text-dark">Most Viewed Videos</h5>
+                                <p class="text-muted small mb-0">Top performing videos by view count</p>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="performanceChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="engagement" role="tabpanel">
+                        <div class="chart-wrapper">
+                            <div class="chart-header text-center mb-3">
+                                <h5 class="font-weight-600 text-dark">Engagement Analysis</h5>
+                                <p class="text-muted small mb-2">How your audience interacts with your content</p>
+                                <div class="engagement-info-card">
+                                    <div class="row text-center">
+                                        <div class="col-md-4">
+                                            <div class="engagement-legend">
+                                                <span class="legend-color high-engagement"></span>
+                                                <strong>High Engagement</strong>
+                                                <small class="d-block text-muted">Engagement rate > 75th percentile</small>
+                                                <small class="d-block text-muted">Strong audience interaction</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="engagement-legend">
+                                                <span class="legend-color medium-engagement"></span>
+                                                <strong>Medium Engagement</strong>
+                                                <small class="d-block text-muted">25th - 75th percentile</small>
+                                                <small class="d-block text-muted">Average audience interaction</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="engagement-legend">
+                                                <span class="legend-color low-engagement"></span>
+                                                <strong>Low Engagement</strong>
+                                                <small class="d-block text-muted">Engagement rate < 25th percentile</small>
+                                                <small class="d-block text-muted">Limited audience interaction</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="text-center mt-3">
+                                        <small class="text-muted">
+                                            <i class="fas fa-info-circle mr-1"></i>
+                                            Engagement rate = (Likes + Comments) ÷ Views × 100
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="engagementChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="distribution" role="tabpanel">
+                        <div class="chart-wrapper">
+                            <div class="chart-header text-center mb-3">
+                                <h5 class="font-weight-600 text-dark">View Distribution</h5>
+                                <p class="text-muted small mb-0">How views are distributed across your playlist</p>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="distributionChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="timeline" role="tabpanel">
+                        <div class="chart-wrapper">
+                            <div class="chart-header text-center mb-3">
+                                <h5 class="font-weight-600 text-dark">Publishing Timeline</h5>
+                                <p class="text-muted small mb-0">Video publishing trends over time</p>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="timelineChart"></canvas>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <small id="emailHelp" class="form-text text-muted">
-                    Please enter a playlist link, playlist ID or a video link from the playlist!
-                </small>
-            </form>
+            </div>
         </div>
+    </div>
+    {% endif %}
 
-        <!-- Displaying the display text received for the rendering -->
-        {% if display_text %}
-        <hr class="my-4">
-        <div class="container">
-            {% for x in display_text %}
-            <p>{{x | safe}}</p>
-            {% endfor %}
+    <!-- Original Chart (for backward compatibility) -->
+    {% if chart_data %}
+    <div class="row mb-5">
+        <div class="col-lg-10 mx-auto">
+            <div class="card border-0 shadow-lg fade-in">
+                <div class="card-header text-center">
+                    <h5 class="mb-0 font-weight-600">
+                        <i class="fas fa-clock mr-2"></i>
+                        Video Duration Analysis
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="chart-container">
+                        <canvas id="originalChart"></canvas>
+                    </div>
+                </div>
+            </div>
         </div>
-        {% endif %}
+    </div>
+    {% endif %}
 
-        <!-- If Chart Data is received, display the chart -->
-        {% if chart_data %}
-        <div class="container" style="position: relative; height:60vh; width:80vw">
-            <canvas id="myChart"></canvas>
+    <!-- Feature Highlights (when no data) -->
+    {% if not analysis_data and not chart_data %}
+    <div class="row mb-5">
+        <div class="col-lg-10 mx-auto">
+            <div class="text-center mb-5">
+                <h3 class="text-gradient font-weight-bold mb-3">Powerful Analytics Features</h3>
+                <p class="text-muted">Discover what you can do with YouTube Playlist Analyzer</p>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card text-center p-4">
+                        <div class="feature-icon mb-3">
+                            <i class="fas fa-chart-bar fa-3x text-primary"></i>
+                        </div>
+                        <h5 class="font-weight-600 mb-3">Detailed Analytics</h5>
+                        <p class="text-muted">Get comprehensive insights about video performance, engagement metrics, and viewing patterns.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card text-center p-4">
+                        <div class="feature-icon mb-3">
+                            <i class="fas fa-download fa-3x text-success"></i>
+                        </div>
+                        <h5 class="font-weight-600 mb-3">Multiple Export Formats</h5>
+                        <p class="text-muted">Export your analysis in CSV, Excel, JSON, or PDF formats for further processing and sharing.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card text-center p-4">
+                        <div class="feature-icon mb-3">
+                            <i class="fas fa-chart-pie fa-3x text-info"></i>
+                        </div>
+                        <h5 class="font-weight-600 mb-3">Interactive Charts</h5>
+                        <p class="text-muted">Visualize your data with beautiful, interactive charts showing trends and patterns.</p>
+                    </div>
+                </div>
+            </div>
         </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
 
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script>
+{% block scripts %}
+<style>
+.feature-card {
+    background: white;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-color);
+    height: 100%;
+}
 
-            // Chart data
-            const data = {
-                labels: {{ chart_data[0]| tojson | safe }},
-            datasets: [{
-                label: 'Time (mins)',
-                data: {{ chart_data[1]| tojson | safe }},
-                backgroundColor: 'rgba(255, 99, 156, 0.2)',
-                borderColor: 'rgba(255, 99, 132, 1)',
-                borderWidth: 3
-                        }]
-                    };
+.feature-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-lg);
+}
 
-            // Chart config
-            const config = {
-                type: 'bar',
-                data,
-                options: {
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
+.feature-icon {
+    opacity: 0.8;
+}
+
+.hero-content {
+    padding: 2rem 0;
+}
+
+/* Enhanced Chart Styling */
+.chart-wrapper {
+    padding: 20px;
+    background: white;
+}
+
+.chart-container {
+    position: relative;
+    height: 400px;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.chart-container canvas {
+    max-width: 100% !important;
+    max-height: 100% !important;
+}
+
+/* Engagement Analysis Styling */
+.engagement-info-card {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #e9ecef;
+}
+
+.engagement-legend {
+    margin-bottom: 10px;
+}
+
+.legend-color {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.high-engagement {
+    background-color: rgba(75, 192, 192, 0.8);
+}
+
+.medium-engagement {
+    background-color: rgba(255, 206, 86, 0.8);
+}
+
+.low-engagement {
+    background-color: rgba(255, 99, 132, 0.8);
+}
+
+/* Tab Styling */
+.nav-tabs {
+    border-bottom: none !important;
+}
+
+.nav-tabs .nav-link {
+    border: none !important;
+    border-radius: 0 !important;
+    color: #6c757d;
+    background: #f8f9fa;
+    margin-right: 1px;
+    padding: 12px 20px;
+    transition: all 0.3s ease;
+}
+
+.nav-tabs .nav-link.active {
+    background: white !important;
+    color: #495057 !important;
+    border-bottom: 3px solid #007bff !important;
+    font-weight: 600;
+}
+
+.nav-tabs .nav-link:hover:not(.active) {
+    background: #e9ecef;
+    color: #495057;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-content {
+        padding: 1rem 0;
+    }
+
+    .display-4 {
+        font-size: 2rem;
+    }
+
+    .export-btn {
+        margin-bottom: 1rem;
+    }
+
+    .chart-container {
+        height: 300px;
+        padding: 5px;
+    }
+
+    .chart-wrapper {
+        padding: 15px;
+    }
+
+    .nav-tabs .nav-link {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
+
+    .engagement-legend {
+        margin-bottom: 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .chart-container {
+        height: 250px;
+    }
+
+    .nav-tabs .nav-link {
+        padding: 6px 8px;
+        font-size: 0.8rem;
+    }
+}
+</style>
+
+{% if analysis_data %}
+<script>
+// Store the playlist URL and analysis data for export functions
+let currentPlaylistUrl = '{{ playlist_url | default(request.form.search_string) }}';
+window.analysisData = {
+    playlist_url: currentPlaylistUrl,
+    analysis_data: {{ analysis_data | tojson | safe }},
+    analysis_type: 'enhanced'
+};
+
+// Store visual analytics data if available
+{% if visual_analytics %}
+window.visualAnalytics = {{ visual_analytics | tojson | safe }};
+{% else %}
+window.visualAnalytics = null;
+{% endif %}
+
+// Export functionality - make it globally accessible
+window.exportData = function(format) {
+    if (!currentPlaylistUrl && !window.analysisData) {
+        alert('Please analyze a playlist first before exporting data.');
+        return;
+    }
+
+    // Find the button that was clicked (if any)
+    const exportBtn = event.target.closest('button');
+    let originalText = '';
+    if (exportBtn) {
+        originalText = exportBtn.innerHTML;
+        exportBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exporting...';
+        exportBtn.disabled = true;
+    }
+
+    // Show loading message at top of page
+    const loadingMessage = document.createElement('div');
+    loadingMessage.className = 'alert alert-info';
+    loadingMessage.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Preparing ' + format.toUpperCase() + ' export...';
+    document.body.insertBefore(loadingMessage, document.body.firstChild);
+
+    fetch(`/api/export/${format}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            playlist_url: currentPlaylistUrl,
+            analysis_type: 'enhanced'
+        })
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Export failed');
+        return response.blob();
+    })
+    .then(blob => {
+        // Remove loading message
+        if (document.body.contains(loadingMessage)) {
+            document.body.removeChild(loadingMessage);
+        }
+
+        // Download the file
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = `playlist_analysis.${format === 'excel' ? 'xlsx' : format}`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+
+        // Show success message
+        const successMessage = document.createElement('div');
+        successMessage.className = 'alert alert-success';
+        successMessage.innerHTML = '<i class="fas fa-check"></i> ' + format.toUpperCase() + ' export completed successfully!';
+        document.body.insertBefore(successMessage, document.body.firstChild);
+        setTimeout(() => {
+            if (document.body.contains(successMessage)) {
+                document.body.removeChild(successMessage);
+            }
+        }, 3000);
+
+        // Reset button
+        if (exportBtn) {
+            exportBtn.innerHTML = originalText;
+            exportBtn.disabled = false;
+        }
+    })
+    .catch(error => {
+        console.error('Export failed:', error);
+
+        // Remove loading message
+        if (document.body.contains(loadingMessage)) {
+            document.body.removeChild(loadingMessage);
+        }
+
+        // Show error message
+        const errorMessage = document.createElement('div');
+        errorMessage.className = 'alert alert-danger';
+        errorMessage.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Export failed: ' + error.message;
+        document.body.insertBefore(errorMessage, document.body.firstChild);
+        setTimeout(() => {
+            if (document.body.contains(errorMessage)) {
+                document.body.removeChild(errorMessage);
+            }
+        }, 5000);
+
+        // Reset button
+        if (exportBtn) {
+            exportBtn.innerHTML = originalText;
+            exportBtn.disabled = false;
+        }
+    });
+}
+
+// Load and display enhanced analytics charts
+async function loadCharts() {
+    try {
+        console.log('Loading charts for playlist:', currentPlaylistUrl);
+
+        // Check if we already have visual analytics data
+        if (window.visualAnalytics) {
+            console.log('Using embedded visual analytics data');
+            renderChartsFromData(window.visualAnalytics);
+            return;
+        }
+
+        // Fetch fresh data from API
+        console.log('Fetching fresh chart data from API');
+        const response = await fetch('/api/chart-data', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                playlist_url: currentPlaylistUrl
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('Received chart data:', data);
+
+        if (!data.success) {
+            throw new Error(data.error || 'Failed to get chart data');
+        }
+
+        const chartData = data.chart_data;
+        renderChartsFromApiData(chartData);
+
+    } catch (error) {
+        console.error('Failed to load charts:', error);
+        showChartError('Failed to load visual analytics. Please try refreshing the page.');
+    }
+}
+
+// Render charts from embedded visual analytics data
+function renderChartsFromData(visualAnalytics) {
+    console.log('Rendering charts from visual analytics data');
+
+    // Top Videos Chart (Performance)
+    if (visualAnalytics.top_videos && visualAnalytics.top_videos.by_views) {
+        const ctx1 = document.getElementById('performanceChart').getContext('2d');
+        new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: visualAnalytics.top_videos.by_views.labels || [],
+                datasets: [{
+                    label: 'Views',
+                    data: visualAnalytics.top_videos.by_views.data || [],
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Top Videos by Views'
+                    },
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString();
+                            }
                         }
                     },
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: "Videos in Playlist"
-                            },
-                            ticks: {
-                                display: false
-                            }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: "Length of Videos (HH:MM:SS)"
-                            },
-                            ticks: {
-                                callback(value, index, values) {
-                                    let hours = parseInt(value / 60).toString().padStart(2, 0)
-                                    let minutes = (parseInt(value)).toString().padStart(2, 0)
-                                    let delta = (value - parseInt(value)) * 60
-                                    let seconds = (parseInt(delta)).toString().padStart(2, 0)
-                                    return `${hours}:${minutes}:${seconds}`;
-                                }
+                    x: {
+                        ticks: {
+                            maxRotation: 45,
+                            minRotation: 45
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Engagement Chart
+    if (visualAnalytics.engagement && visualAnalytics.engagement.overview) {
+        const ctx2 = document.getElementById('engagementChart').getContext('2d');
+        new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+                labels: visualAnalytics.engagement.overview.labels || [],
+                datasets: [{
+                    data: visualAnalytics.engagement.overview.data || [],
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.8)',
+                        'rgba(255, 206, 86, 0.8)',
+                        'rgba(255, 99, 132, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(255, 99, 132, 1)'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Engagement Distribution'
+                    },
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.parsed || 0;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return `${label}: ${value} videos (${percentage}%)`;
                             }
                         }
                     }
                 }
-            };
+            }
+        });
+    }
 
-            // Render init block, creating canvas
-            const ctx = new Chart(
-                document.getElementById('myChart'),
-                config
-            );
+    // View Distribution Chart
+    if (visualAnalytics.view_distribution && visualAnalytics.view_distribution.chart) {
+        const ctx3 = document.getElementById('distributionChart').getContext('2d');
+        new Chart(ctx3, {
+            type: 'pie',
+            data: {
+                labels: visualAnalytics.view_distribution.chart.labels || [],
+                datasets: [{
+                    data: visualAnalytics.view_distribution.chart.data || [],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.6)',
+                        'rgba(54, 162, 235, 0.6)',
+                        'rgba(255, 206, 86, 0.6)',
+                        'rgba(75, 192, 192, 0.6)',
+                        'rgba(153, 102, 255, 0.6)',
+                        'rgba(255, 159, 64, 0.6)',
+                        'rgba(199, 199, 199, 0.6)',
+                        'rgba(83, 102, 255, 0.6)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(199, 199, 199, 1)',
+                        'rgba(83, 102, 255, 1)'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'View Distribution Across Videos'
+                    },
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            padding: 10,
+                            usePointStyle: true,
+                            font: {
+                                size: 10
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.parsed + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
 
-            // Adjusting Height and width of the canvas acc. to window size
-            window.onresize = function () {
-                ctx.width = window.innerWidth;
-                ctx.height = window.innerHeight;
-                window.onresize();
-            };
-        </script>
+    // Timeline Chart
+    if (visualAnalytics.timeline && visualAnalytics.timeline.chart) {
+        const ctx4 = document.getElementById('timelineChart').getContext('2d');
+        new Chart(ctx4, {
+            type: 'line',
+            data: {
+                labels: visualAnalytics.timeline.chart.labels || [],
+                datasets: visualAnalytics.timeline.chart.datasets || []
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Publishing Timeline Analysis'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        position: 'left',
+                        ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString();
+                            }
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        beginAtZero: true,
+                        grid: {
+                            drawOnChartArea: false,
+                        },
+                    },
+                    x: {
+                        ticks: {
+                            maxRotation: 45,
+                            minRotation: 45
+                        }
+                    }
+                }
+            }
+        });
+    }
+}
 
-        {% endif %}
+// Render charts from API data
+function renderChartsFromApiData(chartData) {
+    console.log('Rendering charts from API data');
 
-    </div>
+    // Performance Chart
+    if (chartData.video_performance) {
+        const ctx1 = document.getElementById('performanceChart').getContext('2d');
+        new Chart(ctx1, {
+            type: chartData.video_performance.type,
+            data: chartData.video_performance.data,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: chartData.video_performance.title
+                    }
+                }
+            }
+        });
+    }
 
-    <div class="footer bg-dark">
-        <temp id="sticky-footer" class="py-1 text-white-50">
-            <div class="footer-copyright text-center py-3">
-                <font size="4" color="white">
-                    Made with ❤ by <a href="https://github.com/805karansaini/"> Karan Saini</a>
-                </font>
-            </div>
-            <div class="container text-center text-white" style="padding-bottom:20px;">
-                <a href="https://github.com/805karansaini" target="_blank">Github | </a>
-                <a href="https://www.linkedin.com/in/805karansaini/" target="_blank">Linkedin | </a>
-                <a href="https://github.com/805karansaini/youtube_playlist_analyser" target="_blank">Source Code</a>
-            </div>
-        </temp>
-    </div>
-</body>
+    // Engagement Chart
+    if (chartData.engagement_metrics) {
+        const ctx2 = document.getElementById('engagementChart').getContext('2d');
+        new Chart(ctx2, {
+            type: chartData.engagement_metrics.type,
+            data: chartData.engagement_metrics.data,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: chartData.engagement_metrics.title
+                    }
+                }
+            }
+        });
+    }
 
-</html>
+    // Distribution Chart
+    if (chartData.view_distribution) {
+        const ctx3 = document.getElementById('distributionChart').getContext('2d');
+        new Chart(ctx3, {
+            type: chartData.view_distribution.type,
+            data: chartData.view_distribution.data,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: chartData.view_distribution.title
+                    }
+                }
+            }
+        });
+    }
+
+    // Timeline Chart
+    if (chartData.timeline_analysis) {
+        const ctx4 = document.getElementById('timelineChart').getContext('2d');
+        new Chart(ctx4, {
+            type: chartData.timeline_analysis.type,
+            data: chartData.timeline_analysis.data,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: chartData.timeline_analysis.title
+                    }
+                }
+            }
+        });
+    }
+}
+
+// Show error message for chart loading
+function showChartError(message) {
+    const chartContainers = ['performanceChart', 'engagementChart', 'distributionChart', 'timelineChart'];
+
+    chartContainers.forEach(containerId => {
+        const container = document.getElementById(containerId);
+        if (container) {
+            container.style.display = 'none';
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'alert alert-warning text-center';
+            errorDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i> ' + message;
+            container.parentElement.appendChild(errorDiv);
+        }
+    });
+}
+
+// Load charts when the page is ready
+document.addEventListener('DOMContentLoaded', function() {
+    if (currentPlaylistUrl) {
+        console.log('Page loaded, initializing charts...');
+        setTimeout(loadCharts, 500); // Small delay to ensure all elements are ready
+    }
+});
+</script>
+{% endif %}
+
+{% if chart_data %}
+<script>
+// Original chart (backward compatibility)
+const originalData = {
+    labels: {{ chart_data[0] | tojson | safe }},
+    datasets: [{
+        label: 'Time (mins)',
+        data: {{ chart_data[1] | tojson | safe }},
+        backgroundColor: 'rgba(255, 99, 156, 0.2)',
+        borderColor: 'rgba(255, 99, 132, 1)',
+        borderWidth: 3
+    }]
+};
+
+const originalConfig = {
+    type: 'bar',
+    data: originalData,
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            x: {
+                title: {
+                    display: true,
+                    text: "Videos in Playlist"
+                },
+                ticks: {
+                    display: false
+                }
+            },
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: "Length of Videos (HH:MM:SS)"
+                },
+                ticks: {
+                    callback(value, index, values) {
+                        let hours = parseInt(value / 60).toString().padStart(2, '0');
+                        let minutes = (parseInt(value)).toString().padStart(2, '0');
+                        let delta = (value - parseInt(value)) * 60;
+                        let seconds = (parseInt(delta)).toString().padStart(2, '0');
+                        return `${hours}:${minutes}:${seconds}`;
+                    }
+                }
+            }
+        }
+    }
+};
+
+const originalCtx = new Chart(
+    document.getElementById('originalChart'),
+    originalConfig
+);
+</script>
+{% endif %}
+
+<script>
+// Form submission with loading spinner and animations
+document.getElementById('analyzeForm').addEventListener('submit', function(e) {
+    // Show loading spinner
+    document.getElementById('loadingSpinner').style.display = 'block';
+
+    // Scroll to loading spinner
+    document.getElementById('loadingSpinner').scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+    });
+
+    // Add fade out to form
+    this.style.opacity = '0.5';
+    this.style.pointerEvents = 'none';
+});
+
+// Add fade-in animations when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Staggered animation for metric cards
+    const metricCards = document.querySelectorAll('.metric-card');
+    metricCards.forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.1}s`;
+        card.classList.add('fade-in');
+    });
+
+    // Add hover effects to export buttons
+    const exportButtons = document.querySelectorAll('.export-btn');
+    exportButtons.forEach(button => {
+        button.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-3px) scale(1.02)';
+        });
+
+        button.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+});
+</script>
+{% endblock %}
