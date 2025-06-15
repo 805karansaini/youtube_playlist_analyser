@@ -7,7 +7,7 @@ import logging
 
 from core.validation import HomePageRequest, validate_request_data
 from exceptions.exception import PlaylistAnalysisError, YouTubeApiError
-from flask import Blueprint, current_app, jsonify, render_template, request
+from flask import Blueprint, current_app, jsonify, render_template, request, send_from_directory
 from pydantic import ValidationError
 
 bp = Blueprint("home", __name__)
@@ -335,3 +335,16 @@ def get_chart_data():
             jsonify({"success": False, "error": "Failed to generate chart data"}),
             500,
         )
+
+
+@bp.route("/sw.js")
+def service_worker():
+    """Serve the service worker file from the static directory.
+    
+    This route serves the service worker JavaScript file that enables
+    PWA functionality including offline caching and background sync.
+    
+    Returns:
+        The service worker JavaScript file with correct MIME type.
+    """
+    return send_from_directory(current_app.static_folder, 'sw.js', mimetype='application/javascript')

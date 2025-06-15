@@ -5,7 +5,7 @@
     <!-- Required meta tags -->
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no, viewport-fit=cover">
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
@@ -132,6 +132,63 @@
         .dropdown-item:hover {
             background: var(--primary-color);
             color: white;
+        }
+
+        /* Custom Navbar Toggler */
+        .custom-toggler {
+            border: 2px solid var(--primary-color) !important;
+            border-radius: 0.5rem !important;
+            padding: 0.375rem 0.75rem !important;
+            background: rgba(255, 255, 255, 0.9) !important;
+            transition: all 0.3s ease !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+        }
+
+        .custom-toggler:focus {
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25), 0 2px 4px rgba(0,0,0,0.1) !important;
+            outline: none !important;
+            border-color: var(--primary-dark) !important;
+        }
+
+        .custom-toggler:hover {
+            background: var(--primary-color) !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15) !important;
+        }
+
+        .custom-toggler .navbar-toggler-icon {
+            background-image: url('data:image/svg+xml,%3csvg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"%3e%3cpath stroke="%23667eea" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2.5" d="M3 6h18M3 12h18M3 18h18"/%3e%3c/svg%3e') !important;
+            width: 1.25rem !important;
+            height: 1.25rem !important;
+        }
+
+        .custom-toggler:hover .navbar-toggler-icon {
+            background-image: url('data:image/svg+xml,%3csvg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"%3e%3cpath stroke="%23ffffff" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2.5" d="M3 6h18M3 12h18M3 18h18"/%3e%3c/svg%3e') !important;
+        }
+
+        /* Active state for toggler */
+        .custom-toggler[aria-expanded="true"] {
+            background: var(--primary-color) !important;
+            transform: rotate(90deg) !important;
+        }
+
+        .custom-toggler[aria-expanded="true"] .navbar-toggler-icon {
+            background-image: url('data:image/svg+xml,%3csvg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"%3e%3cpath stroke="%23ffffff" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2.5" d="M18 6L6 18M6 6l12 12"/%3e%3c/svg%3e') !important;
+        }
+
+        /* Mobile navbar collapse styling */
+        .navbar-collapse {
+            border-top: 1px solid var(--border-color);
+            margin-top: 1rem;
+            padding-top: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .navbar-collapse {
+                border-top: none;
+                margin-top: 0;
+                padding-top: 0;
+            }
         }
 
         /* Chart Containers */
@@ -366,8 +423,14 @@
 
         /* Responsive Design */
         @media (max-width: 768px) {
+            body {
+                padding-top: 70px;
+                padding-bottom: 140px;
+            }
+            
             .page-wrapper {
-                margin-top: 66px;
+                margin-top: 0;
+                border-radius: 0;
             }
 
             .content-wrapper {
@@ -390,6 +453,84 @@
             .chart-container {
                 height: 300px;
                 padding: 1rem;
+            }
+            
+            .navbar {
+                padding: 0.5rem 0;
+            }
+            
+            .navbar-brand {
+                font-size: 1.2rem;
+            }
+            
+            .container {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            body {
+                padding-top: 65px;
+                padding-bottom: 160px;
+            }
+            
+            .navbar-brand {
+                font-size: 1rem;
+            }
+            
+            .navbar-brand span {
+                display: none;
+            }
+            
+            .navbar-brand::after {
+                content: "Analyzer";
+            }
+            
+            /* Mobile navigation improvements */
+            .navbar-nav {
+                text-align: center;
+                background: rgba(255, 255, 255, 0.98);
+                border-radius: 0.5rem;
+                padding: 0.5rem;
+                margin-top: 0.5rem;
+                box-shadow: var(--shadow-md);
+            }
+            
+            .navbar-nav .nav-item {
+                margin: 0.25rem 0;
+            }
+            
+            .navbar-nav .nav-link {
+                padding: 0.75rem 1rem !important;
+                border-radius: 0.375rem !important;
+                font-weight: 500 !important;
+            }
+            
+            .dropdown-menu {
+                position: static !important;
+                float: none !important;
+                width: 100% !important;
+                margin-top: 0.5rem !important;
+                border: 1px solid var(--border-color) !important;
+                box-shadow: var(--shadow-sm) !important;
+            }
+            
+            .dropdown-toggle::after {
+                display: none !important;
+            }
+            
+            .footer {
+                padding: 1rem 0;
+            }
+            
+            .footer .row {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .footer .col-md-6 {
+                margin-bottom: 1rem;
             }
         }
 
@@ -426,6 +567,28 @@
 
     <title>{% block title %}YouTube Playlist Analyzer{% endblock %}</title>
     <link rel="icon" href="{{ url_for('static', filename='logo_title.jpeg') }}">
+    
+    <!-- PWA Support -->
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Playlist Analyzer">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='logo_title.jpeg') }}">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:title" content="YouTube Playlist Analyzer">
+    <meta property="og:description" content="Analyze YouTube playlists instantly. Get detailed insights about video durations, view counts, engagement metrics, and export comprehensive reports.">
+    <meta property="og:image" content="{{ url_for('static', filename='logo_title.jpeg', _external=True) }}">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ request.url }}">
+    <meta property="twitter:title" content="YouTube Playlist Analyzer">
+    <meta property="twitter:description" content="Analyze YouTube playlists instantly. Get detailed insights about video durations, view counts, engagement metrics, and export comprehensive reports.">
+    <meta property="twitter:image" content="{{ url_for('static', filename='logo_title.jpeg', _external=True) }}">
 </head>
 
 <body>
@@ -436,9 +599,9 @@
                     <i class="fab fa-youtube text-danger mr-2"></i>
                     <span class="text-gradient">Playlist Analyzer</span>
                 </a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" 
-                        style="border: 2px solid var(--primary-color); border-radius: 0.5rem;">
-                    <span style="background-image: url('data:image/svg+xml,%3csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'30\' height=\'30\' viewBox=\'0 0 30 30\'%3e%3cpath stroke=\'%23667eea\' stroke-linecap=\'round\' stroke-miterlimit=\'10\' stroke-width=\'2\' d=\'M4 7h22M4 15h22M4 23h22\'/%3e%3c/svg%3e');"></span>
+                <button class="navbar-toggler custom-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" 
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ml-auto">
@@ -520,6 +683,159 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 
     <script>
+        // PWA Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(function(registration) {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                        
+                        // Check for updates
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    // New update available
+                                    if (confirm('New version available! Reload to update?')) {
+                                        window.location.reload();
+                                    }
+                                }
+                            });
+                        });
+                    })
+                    .catch(function(err) {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
+        }
+
+        // PWA Install Prompt
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent Chrome 67 and earlier from automatically showing the prompt
+            e.preventDefault();
+            // Stash the event so it can be triggered later.
+            deferredPrompt = e;
+            
+            // Show install button/banner
+            showInstallPromotion();
+        });
+
+        function showInstallPromotion() {
+            const installBanner = document.createElement('div');
+            installBanner.innerHTML = `
+                <div class="alert alert-info alert-dismissible fade show position-fixed" 
+                     style="top: 80px; right: 20px; z-index: 9999; max-width: 300px;">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-mobile-alt mr-2"></i>
+                        <div class="flex-grow-1">
+                            <strong>Install App</strong><br>
+                            <small>Add to your home screen for a better experience!</small>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <button class="btn btn-primary btn-sm mr-2" onclick="installPWA()">Install</button>
+                        <button class="btn btn-secondary btn-sm" onclick="dismissInstallPrompt()">Later</button>
+                    </div>
+                    <button type="button" class="close" onclick="dismissInstallPrompt()">
+                        <span>&times;</span>
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(installBanner);
+        }
+
+        window.installPWA = function() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted the install prompt');
+                    }
+                    deferredPrompt = null;
+                    dismissInstallPrompt();
+                });
+            }
+        };
+
+        window.dismissInstallPrompt = function() {
+            const banner = document.querySelector('.alert');
+            if (banner) {
+                banner.remove();
+            }
+        };
+
+        // Track PWA usage
+        window.addEventListener('appinstalled', (evt) => {
+            console.log('PWA was installed');
+        });
+
+        // Mobile navigation improvements
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggler = document.querySelector('.navbar-toggler');
+            const navbar = document.querySelector('.navbar-collapse');
+            
+            // Handle toggler animation
+            if (toggler && navbar) {
+                toggler.addEventListener('click', function() {
+                    // Toggle aria-expanded for CSS styling
+                    setTimeout(() => {
+                        const isExpanded = navbar.classList.contains('show');
+                        toggler.setAttribute('aria-expanded', isExpanded);
+                    }, 10);
+                });
+                
+                // Handle Bootstrap collapse events
+                $(navbar).on('shown.bs.collapse', function() {
+                    toggler.setAttribute('aria-expanded', 'true');
+                });
+                
+                $(navbar).on('hidden.bs.collapse', function() {
+                    toggler.setAttribute('aria-expanded', 'false');
+                });
+            }
+            
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', function(event) {
+                if (navbar && navbar.classList.contains('show') && 
+                    !navbar.contains(event.target) && 
+                    !toggler.contains(event.target)) {
+                    
+                    // Collapse the navbar
+                    $('.navbar-collapse').collapse('hide');
+                }
+            });
+
+            // Improve dropdown behavior on mobile
+            if (window.innerWidth <= 768) {
+                const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+                dropdownToggles.forEach(toggle => {
+                    toggle.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const dropdownMenu = this.nextElementSibling;
+                        
+                        // Toggle the dropdown
+                        if (dropdownMenu.style.display === 'block') {
+                            dropdownMenu.style.display = 'none';
+                        } else {
+                            // Hide all other dropdowns first
+                            document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                                menu.style.display = 'none';
+                            });
+                            dropdownMenu.style.display = 'block';
+                        }
+                    });
+                });
+            }
+
+            // Close navbar when nav link is clicked (for single page app behavior)
+            document.querySelectorAll('.nav-link:not(.dropdown-toggle)').forEach(link => {
+                link.addEventListener('click', function() {
+                    $('.navbar-collapse').collapse('hide');
+                });
+            });
+        });
+
         // Fallback export function for when no analysis data is available
         if (typeof window.exportData === 'undefined') {
             window.exportData = function(format) {

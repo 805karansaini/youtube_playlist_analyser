@@ -34,21 +34,19 @@
                             <label for="search_string" class="font-weight-600 text-dark mb-3">
                                 Enter YouTube Playlist URL:
                             </label>
-                            <div class="input-group input-group-lg">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text bg-primary text-white border-0">
+                            <div class="modern-input-group">
+                                <div class="input-wrapper">
+                                    <div class="input-icon">
                                         <i class="fab fa-youtube"></i>
-                                    </span>
+                                    </div>
+                                    <input type="text" class="form-control modern-input"
+                                           placeholder="https://www.youtube.com/playlist?list=PLMCXHnjXnTnt-aA0yHoa6QcVdQ0Mu3g9j"
+                                           name="search_string" id="search_string" required>
                                 </div>
-                                <input type="text" class="form-control border-0 shadow-sm"
-                                       placeholder="https://www.youtube.com/playlist?list=PLMCXHnjXnTnt-aA0yHoa6QcVdQ0Mu3g9j"
-                                       name="search_string" id="search_string" required>
-                                <div class="input-group-append">
-                                    <button type="submit" class="btn btn-primary btn-lg px-4">
-                                        <i class="fas fa-chart-bar mr-2"></i>
-                                        Analyze Now
-                                    </button>
-                                </div>
+                                <button type="submit" class="btn btn-primary modern-btn">
+                                    <i class="fas fa-chart-bar mr-2"></i>
+                                    <span class="btn-text">Analyze Now</span>
+                                </button>
                             </div>
                             <div class="row mt-3">
                                 <div class="col-md-6">
@@ -483,14 +481,104 @@
     color: #495057;
 }
 
+/* Modern Input Group Styling */
+.modern-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+}
+
+.input-wrapper {
+    position: relative;
+    flex: 1;
+}
+
+.input-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #667eea;
+    font-size: 1.2rem;
+    z-index: 2;
+}
+
+.modern-input {
+    padding: 1rem 1rem 1rem 3rem !important;
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 0.75rem !important;
+    font-size: 1rem !important;
+    height: auto !important;
+    min-height: 3.5rem;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
+}
+
+.modern-input:focus {
+    border-color: #667eea !important;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
+    outline: none !important;
+}
+
+.modern-btn {
+    padding: 1rem 2rem !important;
+    border-radius: 0.75rem !important;
+    font-weight: 600 !important;
+    min-height: 3.5rem;
+    font-size: 1rem !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    border: none !important;
+    transition: all 0.3s ease !important;
+}
+
+.modern-btn:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3) !important;
+}
+
+.modern-btn:active {
+    transform: translateY(0) !important;
+}
+
 /* Responsive Design */
-@media (max-width: 768px) {
+@media (min-width: 768px) {
+    .modern-input-group {
+        flex-direction: row;
+        align-items: stretch;
+    }
+    
+    .input-wrapper {
+        flex: 1;
+        margin-right: 1rem;
+    }
+    
+    .modern-btn {
+        flex-shrink: 0;
+        min-width: 200px;
+    }
+}
+
+@media (max-width: 767px) {
     .hero-content {
         padding: 1rem 0;
     }
 
     .display-4 {
-        font-size: 2rem;
+        font-size: 1.8rem !important;
+    }
+    
+    .modern-input {
+        font-size: 16px !important; /* Prevents zoom on iOS */
+    }
+    
+    .modern-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .btn-text {
+        font-size: 1.1rem;
     }
 
     .export-btn {
@@ -498,8 +586,18 @@
     }
 
     .chart-container {
-        height: 300px;
+        height: 350px;
         padding: 5px;
+    }
+    
+    /* Specific height adjustments for pie charts on mobile */
+    #distribution .chart-container {
+        height: 450px;
+    }
+    
+    /* Add more spacing for chart wrappers on mobile */
+    .chart-wrapper {
+        padding: 10px;
     }
 
     .chart-wrapper {
@@ -514,9 +612,23 @@
     .engagement-legend {
         margin-bottom: 15px;
     }
+    
+    /* Mobile-specific card improvements */
+    .card-body {
+        padding: 1.5rem !important;
+    }
+    
+    .container {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
 }
 
 @media (max-width: 576px) {
+    .display-4 {
+        font-size: 1.5rem !important;
+    }
+    
     .chart-container {
         height: 250px;
     }
@@ -524,6 +636,18 @@
     .nav-tabs .nav-link {
         padding: 6px 8px;
         font-size: 0.8rem;
+    }
+    
+    .hero-content h1 {
+        font-size: 1.4rem !important;
+    }
+    
+    .hero-content .lead {
+        font-size: 1rem !important;
+    }
+    
+    .card-body {
+        padding: 1rem !important;
     }
 }
 </style>
@@ -828,15 +952,48 @@ function renderChartsFromData(visualAnalytics) {
                 plugins: {
                     title: {
                         display: true,
-                        text: 'View Distribution Across Videos'
+                        text: 'View Distribution Across Videos',
+                        padding: {
+                            top: 10,
+                            bottom: window.innerWidth <= 768 ? 20 : 10
+                        },
+                        font: {
+                            size: window.innerWidth <= 768 ? 14 : 16
+                        }
                     },
                     legend: {
-                        position: 'right',
+                        position: window.innerWidth <= 768 ? 'bottom' : 'right',
                         labels: {
-                            padding: 10,
+                            padding: window.innerWidth <= 768 ? 20 : 10,
                             usePointStyle: true,
                             font: {
-                                size: 10
+                                size: window.innerWidth <= 768 ? 11 : 10
+                            },
+                            boxWidth: window.innerWidth <= 768 ? 12 : 12,
+                            generateLabels: function(chart) {
+                                const data = chart.data;
+                                if (data.labels.length && data.datasets.length) {
+                                    return data.labels.map((label, i) => {
+                                        const dataset = data.datasets[0];
+                                        const backgroundColor = dataset.backgroundColor[i];
+                                        
+                                        // Truncate long labels on mobile
+                                        let displayLabel = label;
+                                        if (window.innerWidth <= 768 && label.length > 25) {
+                                            displayLabel = label.substring(0, 22) + '...';
+                                        }
+                                        
+                                        return {
+                                            text: displayLabel,
+                                            fillStyle: backgroundColor,
+                                            strokeStyle: dataset.borderColor[i],
+                                            lineWidth: dataset.borderWidth,
+                                            pointStyle: 'circle',
+                                            index: i
+                                        };
+                                    });
+                                }
+                                return [];
                             }
                         }
                     },
@@ -955,7 +1112,50 @@ function renderChartsFromApiData(chartData) {
                 plugins: {
                     title: {
                         display: true,
-                        text: chartData.view_distribution.title
+                        text: chartData.view_distribution.title,
+                        padding: {
+                            top: 10,
+                            bottom: window.innerWidth <= 768 ? 20 : 10
+                        },
+                        font: {
+                            size: window.innerWidth <= 768 ? 14 : 16
+                        }
+                    },
+                    legend: {
+                        position: window.innerWidth <= 768 ? 'bottom' : 'right',
+                        labels: {
+                            padding: window.innerWidth <= 768 ? 20 : 10,
+                            usePointStyle: true,
+                            font: {
+                                size: window.innerWidth <= 768 ? 11 : 10
+                            },
+                            boxWidth: window.innerWidth <= 768 ? 12 : 12,
+                            generateLabels: function(chart) {
+                                const data = chart.data;
+                                if (data.labels.length && data.datasets.length) {
+                                    return data.labels.map((label, i) => {
+                                        const dataset = data.datasets[0];
+                                        const backgroundColor = dataset.backgroundColor[i];
+                                        
+                                        // Truncate long labels on mobile
+                                        let displayLabel = label;
+                                        if (window.innerWidth <= 768 && label.length > 25) {
+                                            displayLabel = label.substring(0, 22) + '...';
+                                        }
+                                        
+                                        return {
+                                            text: displayLabel,
+                                            fillStyle: backgroundColor,
+                                            strokeStyle: dataset.borderColor[i],
+                                            lineWidth: dataset.borderWidth,
+                                            pointStyle: 'circle',
+                                            index: i
+                                        };
+                                    });
+                                }
+                                return [];
+                            }
+                        }
                     }
                 }
             }
@@ -1004,6 +1204,27 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Page loaded, initializing charts...');
         setTimeout(loadCharts, 500); // Small delay to ensure all elements are ready
     }
+});
+
+// Handle orientation changes and window resize for better mobile experience
+let resizeTimer;
+window.addEventListener('resize', function() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function() {
+        // Only reload charts if the screen size category changed
+        const charts = Chart.getChart && Object.values(Chart.instances || {});
+        if (charts && charts.length > 0) {
+            charts.forEach(chart => {
+                if (chart && chart.destroy) {
+                    chart.destroy();
+                }
+            });
+            // Reload charts with new responsive settings
+            if (currentPlaylistUrl) {
+                setTimeout(loadCharts, 300);
+            }
+        }
+    }, 300);
 });
 </script>
 {% endif %}
