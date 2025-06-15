@@ -278,8 +278,8 @@ def export_pdf():
         if not data:
             return jsonify({"error": "No JSON data provided"}), 400
 
-        url_request = validate_request_data(data, PlaylistUrlRequest)
-        playlist_id = url_request.get_playlist_id()
+        url_request = validate_request_data(data, ExportRequest)
+        playlist_id = url_request.playlist_url.split("list=")[-1].split("&")[0]
 
         if not playlist_id:
             return jsonify({"error": "Invalid playlist URL"}), 400
@@ -290,7 +290,7 @@ def export_pdf():
         pdf_service = container.get_pdf_report_service()
 
         # Get analysis data
-        analysis_data = analyzer_service.analyze_playlist(url_request.url)
+        analysis_data = analyzer_service.analyze_playlist(url_request.playlist_url)
 
         # Generate PDF report
         pdf_data = pdf_service.generate_report(analysis_data)

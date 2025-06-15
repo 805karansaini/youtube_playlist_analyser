@@ -7,6 +7,8 @@ and formatted data presentations.
 import io
 from datetime import datetime
 from typing import Dict, Any, List
+import matplotlib
+matplotlib.use('Agg')  # Use non-interactive backend for web apps
 import matplotlib.pyplot as plt
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4

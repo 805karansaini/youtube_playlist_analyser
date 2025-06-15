@@ -101,7 +101,7 @@ class PlaylistAnalysisRequest(BaseModel):
     analysis_type: str = Field(
         default="basic",
         description="Type of analysis to perform",
-        pattern="^(basic|detailed|trends|sentiment)$",
+        pattern="^(basic|detailed|trends|sentiment|enhanced)$",
     )
 
     max_videos: Optional[int] = Field(
@@ -295,7 +295,7 @@ class ExportRequest(BaseModel):
     analysis_type: str = Field(
         default="basic",
         description="Type of analysis to perform",
-        pattern="^(basic|detailed|trends|sentiment)$",
+        pattern="^(basic|detailed|trends|sentiment|enhanced)$",
     )
 
     @field_validator("playlist_url")

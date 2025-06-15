@@ -1,19 +1,40 @@
-# Development dependencies - matches pyproject.toml [dependency-groups.dev]
-# Note: This project uses uv for dependency management. Use `uv sync --group dev` instead.
+# Development dependencies - includes documentation generation tools
+-r requirements.txt
 
-# Core development tools
-bandit>=1.8.3
-black>=25.1.0
-flake8>=7.2.0
-isort>=6.0.1
-mypy>=1.16.0
-pre-commit>=4.2.0
+# Documentation generation
+mkdocs==1.6.1
+mkdocs-autorefs==1.2.0
+mkdocs-get-deps==0.2.0
+mkdocs-material==9.5.47
+mkdocs-material-extensions==1.3.1
+mkdocs-minify-plugin==0.8.0
+mkdocstrings==0.27.0
+mkdocstrings-python==1.12.2
 
-# Testing
-pytest>=8.4.0
-pytest-cov>=6.2.1
-pytest-flask>=1.3.0
-pytest-mock>=3.14.1
+# Documentation dependencies
+babel==2.16.0
+colorama==0.4.6
+csscompressor==0.9.5
+ghp-import==2.1.0
+griffe==1.5.1
+htmlmin2==0.1.13
+jsmin==3.0.1
+Markdown==3.7
+mergedeep==1.3.4
+pathspec==0.12.1
+Pygments==2.18.0
+pymdown-extensions==10.12
+PyYAML==6.0.2
+pyyaml_env_tag==0.1
+watchdog==6.0.0
 
-# Package management
-uv>=0.5.22
+# Code quality and development tools
+black==24.10.0
+isort==5.13.2
+pre-commit==4.0.1
+pytest==8.3.3
+pytest-cov==6.0.0
+
+# Other development tools
+paginate==0.5.7
+regex==2024.11.6
