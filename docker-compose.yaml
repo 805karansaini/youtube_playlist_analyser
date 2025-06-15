@@ -8,7 +8,7 @@ services:
     container_name: youtube-playlist-analyzer-web
     restart: unless-stopped
     ports:
-      - "5000:5001"
+      - "5001:5001"
     environment:
       - FLASK_APP=main.py
       - FLASK_ENV=production
@@ -19,7 +19,7 @@ services:
     volumes:
       - ./app:/youtube_playlist_analyser/app
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:5000/" ]
+      test: [ "CMD", "curl", "-f", "http://localhost:5001/" ]
       interval: 30s
       timeout: 10s
       retries: 3
