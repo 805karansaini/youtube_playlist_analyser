@@ -1,7 +1,7 @@
 """Export routes for YouTube Playlist Analyzer.
 
 This module provides Flask routes for exporting playlist analysis data
-in various formats including CSV, Excel, JSON, and PDF reports.
+in various formats including CSV, Excel, and JSON reports.
 """
 
 import io
@@ -259,61 +259,6 @@ def export_json():
         return jsonify({"error": "Export failed"}), 500
 
 
-@bp.route("/pdf", methods=["POST"])
-def export_pdf():
-    """Export playlist analysis data to PDF report format.
-
-    Expected JSON payload:
-    {
-        "playlist_url": "https://www.youtube.com/playlist?list=...",
-        "analysis_type": "basic" (optional)
-    }
-
-    Returns:
-        PDF file download
-    """
-    try:
-        # Validate request data
-        data = request.get_json()
-        if not data:
-            return jsonify({"error": "No JSON data provided"}), 400
-
-        url_request = validate_request_data(data, ExportRequest)
-        playlist_id = url_request.playlist_url.split("list=")[-1].split("&")[0]
-
-        if not playlist_id:
-            return jsonify({"error": "Invalid playlist URL"}), 400
-
-        # Get services from container
-        container = current_app.container
-        analyzer_service = container.get_playlist_analyzer_service()
-        pdf_service = container.get_pdf_report_service()
-
-        # Get analysis data
-        analysis_data = analyzer_service.analyze_playlist(url_request.playlist_url)
-
-        # Generate PDF report
-        pdf_data = pdf_service.generate_report(analysis_data)
-
-        # Create file-like object
-        output = io.BytesIO(pdf_data)
-        output.seek(0)
-
-        filename = f"playlist_report_{playlist_id}_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}.pdf"
-
-        return send_file(
-            output,
-            mimetype="application/pdf",
-            as_attachment=True,
-            download_name=filename,
-        )
-
-    except ValueError as e:
-        logger.warning(f"PDF export validation error: {str(e)}")
-        return jsonify({"error": str(e)}), 400
-    except Exception as e:
-        logger.error(f"PDF export failed: {str(e)}")
-        return jsonify({"error": "Export failed"}), 500
 
 
 @bp.route("/chart-data", methods=["POST"])
@@ -404,12 +349,6 @@ def get_export_formats():
             "description": "JavaScript Object Notation format for programmatic use",
             "mimetype": "application/json",
             "endpoint": "/api/export/json",
-        },
-        "pdf": {
-            "name": "PDF Report",
-            "description": "Professional PDF report with charts and analysis",
-            "mimetype": "application/pdf",
-            "endpoint": "/api/export/pdf",
         },
     }
 

@@ -142,7 +142,7 @@ class Config(BaseSettings):
     @classmethod
     def validate_export_formats(cls, v):
         """Validate export formats."""
-        valid_formats = {"csv", "json", "excel", "pdf"}
+        valid_formats = {"csv", "json", "excel"}
         formats = set(format.strip().lower() for format in v.split(","))
         invalid = formats - valid_formats
         if invalid:

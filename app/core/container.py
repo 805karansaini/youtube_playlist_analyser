@@ -13,7 +13,6 @@ from core.config import Config
 from core.logging_config import get_logger
 from repositories.youtube_repository import YouTubeRepository
 from services.export_service import ExportService
-from services.pdf_report_service import PDFReportService
 from services.playlist_analyzer_service import PlaylistAnalyzerService
 from services.youtube_analytics_service import YouTubeAnalyticsService
 from services.youtube_service import YouTubeService
@@ -168,14 +167,6 @@ class Container:
         """
         return ExportService()
 
-    @singleton_with_lock
-    def get_pdf_report_service(self) -> PDFReportService:
-        """Get or create a PDFReportService instance.
-
-        Returns:
-            A PDFReportService instance.
-        """
-        return PDFReportService()
 
     # Utility methods for container management
 
