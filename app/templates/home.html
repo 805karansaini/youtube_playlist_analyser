@@ -599,6 +599,22 @@
     .chart-wrapper {
         padding: 10px;
     }
+    
+    /* Prevent touch-related chart issues on mobile */
+    #originalChart {
+        touch-action: pan-y !important;
+        user-select: none !important;
+    }
+    
+    .chart-container canvas {
+        touch-action: pan-y !important;
+        -webkit-touch-callout: none !important;
+        -webkit-user-select: none !important;
+        -khtml-user-select: none !important;
+        -moz-user-select: none !important;
+        -ms-user-select: none !important;
+        user-select: none !important;
+    }
 
     .chart-wrapper {
         padding: 15px;
@@ -1208,23 +1224,33 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Handle orientation changes and window resize for better mobile experience
 let resizeTimer;
+let lastScreenCategory = window.innerWidth <= 768 ? 'mobile' : 'desktop';
+
 window.addEventListener('resize', function() {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(function() {
-        // Only reload charts if the screen size category changed
-        const charts = Chart.getChart && Object.values(Chart.instances || {});
-        if (charts && charts.length > 0) {
-            charts.forEach(chart => {
-                if (chart && chart.destroy) {
+        // Only reload charts if the screen size category actually changed
+        const currentScreenCategory = window.innerWidth <= 768 ? 'mobile' : 'desktop';
+        
+        if (currentScreenCategory !== lastScreenCategory) {
+            console.log('Screen category changed from', lastScreenCategory, 'to', currentScreenCategory);
+            lastScreenCategory = currentScreenCategory;
+            
+            // Only destroy and recreate enhanced analytics charts, not the original chart
+            const enhancedChartIds = ['performanceChart', 'engagementChart', 'distributionChart', 'timelineChart'];
+            enhancedChartIds.forEach(chartId => {
+                const chart = Chart.getChart(chartId);
+                if (chart) {
                     chart.destroy();
                 }
             });
-            // Reload charts with new responsive settings
+            
+            // Reload enhanced charts with new responsive settings
             if (currentPlaylistUrl) {
                 setTimeout(loadCharts, 300);
             }
         }
-    }, 300);
+    }, 500); // Increased timeout to prevent excessive triggering
 });
 </script>
 {% endif %}
@@ -1284,10 +1310,96 @@ const originalConfig = {
     }
 };
 
-const originalCtx = new Chart(
+// Create the original chart with mobile-friendly options
+const originalChart = new Chart(
     document.getElementById('originalChart'),
-    originalConfig
+    {
+        ...originalConfig,
+        options: {
+            ...originalConfig.options,
+            // Add mobile-specific options
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            },
+            hover: {
+                mode: 'nearest',
+                intersect: false
+            },
+            // Prevent chart from being affected by touch events
+            onHover: function(event, elements) {
+                // Prevent hover issues on mobile
+                if ('ontouchstart' in window && elements.length > 0) {
+                    event.native.target.style.cursor = 'pointer';
+                }
+            }
+        }
+    }
 );
+
+// Store reference globally to prevent accidental destruction
+window.originalChart = originalChart;
+
+// Add error handling and debugging for mobile issues
+originalChart.options.onError = function(error) {
+    console.error('Original chart error:', error);
+};
+
+// Monitor chart destruction
+const originalDestroy = originalChart.destroy;
+originalChart.destroy = function() {
+    console.warn('Original chart being destroyed!', new Error().stack);
+    return originalDestroy.apply(this, arguments);
+};
+
+// Add touch event debugging for mobile
+if ('ontouchstart' in window) {
+    const chartCanvas = document.getElementById('originalChart');
+    if (chartCanvas) {
+        chartCanvas.addEventListener('touchstart', function(e) {
+            console.log('Touch start on original chart');
+        }, { passive: true });
+        
+        chartCanvas.addEventListener('touchend', function(e) {
+            console.log('Touch end on original chart');
+        }, { passive: true });
+    }
+}
+
+// Function to recreate original chart if needed
+function ensureOriginalChart() {
+    const canvas = document.getElementById('originalChart');
+    if (canvas && !Chart.getChart('originalChart')) {
+        console.log('Recreating original chart');
+        window.originalChart = new Chart(canvas, {
+            ...originalConfig,
+            options: {
+                ...originalConfig.options,
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                },
+                hover: {
+                    mode: 'nearest',
+                    intersect: false
+                },
+                onHover: function(event, elements) {
+                    if ('ontouchstart' in window && elements.length > 0) {
+                        event.native.target.style.cursor = 'pointer';
+                    }
+                }
+            }
+        });
+    }
+}
+
+// Monitor for chart disappearance and recreate if needed
+setInterval(function() {
+    if (document.getElementById('originalChart') && !Chart.getChart('originalChart')) {
+        console.warn('Original chart disappeared, recreating...');
+        ensureOriginalChart();
+    }
+}, 2000);
 </script>
 {% endif %}
 
