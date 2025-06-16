@@ -62,13 +62,12 @@
             margin: 0;
             padding: 0;
             padding-top: 76px; /* Space for fixed navbar */
-            padding-bottom: 120px; /* Space for fixed footer */
             min-height: 100vh;
         }
 
         /* Main container that holds everything */
         .main-container {
-            min-height: calc(100vh - 196px); /* Full height minus navbar and footer */
+            min-height: calc(100vh - 76px); /* Full height minus navbar */
             display: flex;
             flex-direction: column;
         }
@@ -401,14 +400,11 @@
 
         /* Footer */
         .footer {
-            background: linear-gradient(135deg, var(--dark-color), #1a202c) !important;
+            background: linear-gradient(135deg, #667eea, #764ba2) !important;
             border-radius: 0;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
+            position: relative;
             width: 100%;
-            z-index: 1000;
+            margin-top: auto;
         }
 
         .footer a {
@@ -425,7 +421,6 @@
         @media (max-width: 768px) {
             body {
                 padding-top: 70px;
-                padding-bottom: 140px;
             }
             
             .page-wrapper {
@@ -467,12 +462,57 @@
                 padding-left: 1rem;
                 padding-right: 1rem;
             }
+            
+            .footer {
+                padding: 1rem 0 !important;
+            }
+            
+            .footer .row {
+                flex-direction: column !important;
+                text-align: center !important;
+                align-items: center !important;
+            }
+            
+            .footer .col-md-6 {
+                margin-bottom: 0.5rem !important;
+                width: 100% !important;
+                max-width: none !important;
+                text-align: center !important;
+            }
+            
+            .footer h6 {
+                font-size: 0.9rem !important;
+                margin-bottom: 0.25rem !important;
+            }
+            
+            .footer p {
+                margin-bottom: 0.5rem !important;
+                font-size: 0.8rem !important;
+            }
+            
+            .footer .social-links {
+                margin-top: 0.5rem !important;
+                margin-bottom: 0.25rem !important;
+                display: block !important;
+            }
+            
+            .footer .social-links a {
+                margin: 0 0.5rem !important;
+                font-size: 1.1rem !important;
+                display: inline-block !important;
+                color: #cbd5e0 !important;
+            }
+            
+            .footer small {
+                font-size: 0.7rem !important;
+                margin-top: 0.25rem !important;
+                display: block !important;
+            }
         }
         
         @media (max-width: 576px) {
             body {
                 padding-top: 65px;
-                padding-bottom: 160px;
             }
             
             .navbar-brand {
@@ -519,19 +559,6 @@
             .dropdown-toggle::after {
                 display: none !important;
             }
-            
-            .footer {
-                padding: 1rem 0;
-            }
-            
-            .footer .row {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .footer .col-md-6 {
-                margin-bottom: 1rem;
-            }
         }
 
         /* Animations */
@@ -562,6 +589,53 @@
             background: rgba(255, 255, 255, 0.25);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Mobile Footer Fix - Show only social links */
+        @media screen and (max-width: 768px) {
+            .footer {
+                padding: 1rem 0 !important;
+                min-height: 60px !important;
+                display: flex !important;
+                align-items: center !important;
+            }
+            
+            .desktop-footer-content {
+                display: none !important;
+            }
+            
+            .mobile-footer-content {
+                display: block !important;
+                width: 100% !important;
+            }
+            
+            .mobile-footer-content .social-links {
+                margin: 0 !important;
+                display: flex !important;
+                justify-content: center !important;
+                align-items: center !important;
+                height: 100% !important;
+            }
+            
+            .mobile-footer-content .social-links a {
+                margin: 0 1.5rem !important;
+                color: #cbd5e0 !important;
+                transition: color 0.3s ease, transform 0.3s ease;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                line-height: 1 !important;
+            }
+            
+            .mobile-footer-content .social-links a:hover {
+                color: var(--accent-color) !important;
+                transform: translateY(-2px);
+            }
+            
+            .mobile-footer-content .social-links a i {
+                font-size: 1.5rem !important;
+                line-height: 1 !important;
+            }
         }
     </style>
 
@@ -644,7 +718,7 @@
         <footer class="footer">
             <div class="container py-4">
                 <div class="row align-items-center">
-                    <div class="col-md-6 text-center text-md-left">
+                    <div class="col-md-6 text-center text-md-left desktop-footer-content">
                         <h6 class="mb-2" style="color: #e2e8f0; font-weight: 600;">
                             <i class="fab fa-youtube text-danger mr-2"></i>
                             YouTube Playlist Analyzer
@@ -654,7 +728,7 @@
                             <a href="https://github.com/805karansaini/" target="_blank">Karan Saini</a>
                         </p>
                     </div>
-                    <div class="col-md-6 text-center text-md-right mt-3 mt-md-0">
+                    <div class="col-md-6 text-center text-md-right mt-3 mt-md-0 desktop-footer-content">
                         <div class="social-links">
                             <a href="https://github.com/805karansaini" target="_blank" class="mr-3" title="GitHub Profile">
                                 <i class="fab fa-github fa-lg"></i>
@@ -670,6 +744,21 @@
                             <small style="color: #718096;">
                                 © 2024 | Open Source Project
                             </small>
+                        </div>
+                    </div>
+                    
+                    <!-- Mobile-only footer content -->
+                    <div class="col-12 text-center mobile-footer-content" style="display: none;">
+                        <div class="social-links">
+                            <a href="https://github.com/805karansaini" target="_blank" class="mx-3" title="GitHub Profile">
+                                <i class="fab fa-github fa-2x"></i>
+                            </a>
+                            <a href="https://www.linkedin.com/in/805karansaini/" target="_blank" class="mx-3" title="LinkedIn Profile">
+                                <i class="fab fa-linkedin fa-2x"></i>
+                            </a>
+                            <a href="https://github.com/805karansaini/youtube_playlist_analyser" target="_blank" class="mx-3" title="Source Code">
+                                <i class="fas fa-code fa-2x"></i>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -770,8 +859,74 @@
             console.log('PWA was installed');
         });
 
+        // Mobile footer fix - show only social links
+        function fixMobileFooter() {
+            if (window.innerWidth <= 768) {
+                const footer = document.querySelector('.footer');
+                if (footer) {
+                    // Hide desktop content and show mobile content
+                    const desktopContent = footer.querySelectorAll('.desktop-footer-content');
+                    const mobileContent = footer.querySelector('.mobile-footer-content');
+                    
+                    desktopContent.forEach(el => {
+                        el.style.display = 'none';
+                    });
+                    
+                    if (mobileContent) {
+                        mobileContent.style.display = 'block';
+                        mobileContent.style.width = '100%';
+                    }
+                    
+                    // Apply mobile footer styling for proper centering
+                    footer.style.cssText += 'padding: 1rem 0 !important; min-height: 60px !important; display: flex !important; align-items: center !important;';
+                    
+                    // Center the social links
+                    const socialLinks = mobileContent.querySelector('.social-links');
+                    if (socialLinks) {
+                        socialLinks.style.cssText += 'display: flex !important; justify-content: center !important; align-items: center !important; margin: 0 !important;';
+                        
+                        const links = socialLinks.querySelectorAll('a');
+                        links.forEach(link => {
+                            link.style.cssText += 'margin: 0 1.5rem !important; display: flex !important; align-items: center !important; justify-content: center !important; line-height: 1 !important; color: #cbd5e0 !important;';
+                            
+                            const icon = link.querySelector('i');
+                            if (icon) {
+                                icon.style.cssText += 'font-size: 1.5rem !important; line-height: 1 !important;';
+                            }
+                        });
+                    }
+                }
+            } else {
+                // Show desktop content and hide mobile content for larger screens
+                const footer = document.querySelector('.footer');
+                if (footer) {
+                    const desktopContent = footer.querySelectorAll('.desktop-footer-content');
+                    const mobileContent = footer.querySelector('.mobile-footer-content');
+                    
+                    desktopContent.forEach(el => {
+                        el.style.display = '';
+                    });
+                    
+                    if (mobileContent) {
+                        mobileContent.style.display = 'none';
+                    }
+                    
+                    // Reset footer styling for desktop
+                    footer.style.cssText = footer.style.cssText.replace(/padding: 1rem 0 !important; min-height: 60px !important; display: flex !important; align-items: center !important;/g, '');
+                }
+            }
+        }
+
         // Mobile navigation improvements
         document.addEventListener('DOMContentLoaded', function() {
+            // Apply mobile footer fix immediately and after a short delay
+            fixMobileFooter();
+            setTimeout(fixMobileFooter, 100);
+            setTimeout(fixMobileFooter, 500);
+            
+            // Re-apply on window resize
+            window.addEventListener('resize', fixMobileFooter);
+            
             const toggler = document.querySelector('.navbar-toggler');
             const navbar = document.querySelector('.navbar-collapse');
             

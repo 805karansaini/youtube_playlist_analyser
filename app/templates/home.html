@@ -420,6 +420,53 @@
     max-height: 100% !important;
 }
 
+/* Chart interaction improvements */
+.chart-container canvas {
+    cursor: pointer;
+}
+
+/* Custom tooltip styling for better visibility */
+.chartjs-tooltip {
+    background: rgba(0, 0, 0, 0.9) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+    max-width: 350px !important;
+    word-wrap: break-word !important;
+}
+
+/* Mobile chart improvements */
+@media (max-width: 768px) {
+    .chart-container {
+        height: 350px;
+        padding: 5px;
+    }
+    
+    /* Better touch interaction on mobile */
+    .chart-container canvas {
+        touch-action: manipulation !important;
+    }
+}
+
+/* Video details modal styling */
+#videoDetailsModal .modal-title {
+    color: #007bff;
+    font-weight: 600;
+}
+
+#videoDetailsModal .modal-body h6 {
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+#videoDetailsModal .modal-body p {
+    margin-bottom: 20px;
+    font-size: 1rem;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
 /* Engagement Analysis Styling */
 .engagement-info-card {
     background: #f8f9fa;
@@ -855,6 +902,35 @@ function renderChartsFromData(visualAnalytics) {
                     },
                     legend: {
                         display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                // Show full video title in tooltip
+                                const index = tooltipItems[0].dataIndex;
+                                
+                                // Get truncated title from chart labels
+                                const chartLabels = visualAnalytics.top_videos.by_views.labels || [];
+                                const truncatedTitle = chartLabels[index] || tooltipItems[0].label;
+                                
+                                // Find and return full title
+                                return findFullTitleByTruncated(truncatedTitle);
+                            },
+                            label: function(context) {
+                                return 'Views: ' + context.parsed.y.toLocaleString();
+                            }
+                        },
+                        titleFont: {
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        bodyFont: {
+                            size: 12
+                        },
+                        maxWidth: 300,
+                        padding: 12,
+                        cornerRadius: 8,
+                        displayColors: false
                     }
                 },
                 scales: {
@@ -869,7 +945,40 @@ function renderChartsFromData(visualAnalytics) {
                     x: {
                         ticks: {
                             maxRotation: 45,
-                            minRotation: 45
+                            minRotation: 45,
+                            callback: function(value, index) {
+                                const label = this.getLabelForValue(value);
+                                // Smart truncation based on screen size
+                                const maxLength = window.innerWidth <= 768 ? 15 : 25;
+                                if (label && label.length > maxLength) {
+                                    return label.substring(0, maxLength - 3) + '...';
+                                }
+                                return label;
+                            },
+                            font: {
+                                size: window.innerWidth <= 768 ? 10 : 11
+                            }
+                        }
+                    }
+                },
+                onClick: function(event, elements) {
+                    if (elements.length > 0) {
+                        const index = elements[0].index;
+                        
+                        // Get truncated title from chart labels
+                        const chartLabels = visualAnalytics.top_videos.by_views.labels || [];
+                        const truncatedTitle = chartLabels[index];
+                        
+                        // Find full title by matching truncated title
+                        const fullTitle = truncatedTitle ? findFullTitleByTruncated(truncatedTitle) : 'Unknown Video';
+                        
+                        if (fullTitle) {
+                            // Get the actual views count
+                            const views = elements[0].parsed && elements[0].parsed.y !== undefined ? 
+                                elements[0].parsed.y : 
+                                (visualAnalytics.top_videos.by_views.data && visualAnalytics.top_videos.by_views.data[index] !== undefined ? 
+                                    visualAnalytics.top_videos.by_views.data[index] : 'N/A');
+                            showVideoDetailsModal(fullTitle, views);
                         }
                     }
                 }
@@ -995,8 +1104,10 @@ function renderChartsFromData(visualAnalytics) {
                                         
                                         // Truncate long labels on mobile
                                         let displayLabel = label;
-                                        if (window.innerWidth <= 768 && label.length > 25) {
-                                            displayLabel = label.substring(0, 22) + '...';
+                                        if (window.innerWidth <= 768 && label.length > 20) {
+                                            displayLabel = label.substring(0, 17) + '...';
+                                        } else if (window.innerWidth > 768 && label.length > 35) {
+                                            displayLabel = label.substring(0, 32) + '...';
                                         }
                                         
                                         return {
@@ -1015,9 +1126,52 @@ function renderChartsFromData(visualAnalytics) {
                     },
                     tooltip: {
                         callbacks: {
+                            title: function(tooltipItems) {
+                                // Show full video title in tooltip
+                                const index = tooltipItems[0].dataIndex;
+                                
+                                // Get truncated title from chart labels
+                                const chartLabels = visualAnalytics.view_distribution.chart.labels || [];
+                                const truncatedTitle = chartLabels[index] || tooltipItems[0].label;
+                                
+                                // Find and return full title
+                                return findFullTitleByTruncated(truncatedTitle);
+                            },
                             label: function(context) {
                                 return context.label + ': ' + context.parsed + '%';
                             }
+                        },
+                        titleFont: {
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        bodyFont: {
+                            size: 12
+                        },
+                        maxWidth: 350,
+                        padding: 12,
+                        cornerRadius: 8,
+                        displayColors: true
+                    }
+                },
+                onClick: function(event, elements) {
+                    if (elements.length > 0) {
+                        const index = elements[0].index;
+                        
+                        // Get truncated title from chart labels
+                        const chartLabels = visualAnalytics.view_distribution.chart.labels || [];
+                        const truncatedTitle = chartLabels[index];
+                        
+                        // Find full title by matching truncated title
+                        const fullTitle = truncatedTitle ? findFullTitleByTruncated(truncatedTitle) : 'Unknown Video';
+                        
+                        if (fullTitle) {
+                            // Get the percentage value safely
+                            const percentage = elements[0].parsed !== undefined ? 
+                                elements[0].parsed + '%' : 
+                                (visualAnalytics.view_distribution.chart.data && visualAnalytics.view_distribution.chart.data[index] !== undefined ? 
+                                    visualAnalytics.view_distribution.chart.data[index] + '%' : 'N/A');
+                            showVideoDetailsModal(fullTitle, percentage);
                         }
                     }
                 }
@@ -1091,6 +1245,73 @@ function renderChartsFromApiData(chartData) {
                     title: {
                         display: true,
                         text: chartData.video_performance.title
+                    },
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                // Show full video title in tooltip
+                                const index = tooltipItems[0].dataIndex;
+                                const fullLabels = chartData.video_performance.data.labels || [];
+                                return fullLabels[index] || tooltipItems[0].label;
+                            },
+                            label: function(context) {
+                                return 'Views: ' + context.parsed.y.toLocaleString();
+                            }
+                        },
+                        titleFont: {
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        bodyFont: {
+                            size: 12
+                        },
+                        maxWidth: 300,
+                        padding: 12,
+                        cornerRadius: 8,
+                        displayColors: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString();
+                            }
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            maxRotation: 45,
+                            minRotation: 45,
+                            callback: function(value, index) {
+                                const label = this.getLabelForValue(value);
+                                // Smart truncation based on screen size
+                                const maxLength = window.innerWidth <= 768 ? 15 : 25;
+                                if (label && label.length > maxLength) {
+                                    return label.substring(0, maxLength - 3) + '...';
+                                }
+                                return label;
+                            },
+                            font: {
+                                size: window.innerWidth <= 768 ? 10 : 11
+                            }
+                        }
+                    }
+                },
+                onClick: function(event, elements) {
+                    if (elements.length > 0) {
+                        const index = elements[0].index;
+                        const fullLabels = chartData.video_performance.data.labels || [];
+                        const fullTitle = fullLabels[index];
+                        if (fullTitle) {
+                            // Show full title in a modal
+                            const views = elements[0].parsed.y;
+                            showVideoDetailsModal(fullTitle, views);
+                        }
                     }
                 }
             }
@@ -1155,8 +1376,10 @@ function renderChartsFromApiData(chartData) {
                                         
                                         // Truncate long labels on mobile
                                         let displayLabel = label;
-                                        if (window.innerWidth <= 768 && label.length > 25) {
-                                            displayLabel = label.substring(0, 22) + '...';
+                                        if (window.innerWidth <= 768 && label.length > 20) {
+                                            displayLabel = label.substring(0, 17) + '...';
+                                        } else if (window.innerWidth > 768 && label.length > 35) {
+                                            displayLabel = label.substring(0, 32) + '...';
                                         }
                                         
                                         return {
@@ -1212,6 +1435,88 @@ function showChartError(message) {
             container.parentElement.appendChild(errorDiv);
         }
     });
+}
+
+// Function to find full title by matching truncated title
+function findFullTitleByTruncated(truncatedTitle) {
+    if (!analysisData || !analysisData.analysis_data || !analysisData.analysis_data.videos) {
+        return truncatedTitle;
+    }
+    
+    const videos = analysisData.analysis_data.videos;
+    
+    // Try to find a video whose title starts with the truncated title (minus "...")
+    const searchText = truncatedTitle.replace(/\.\.\.+$/, '').trim();
+    
+    for (let video of videos) {
+        const fullTitle = video.title || video.name || video;
+        if (fullTitle && fullTitle.startsWith(searchText)) {
+            return fullTitle;
+        }
+    }
+    
+    return truncatedTitle; // Fallback
+}
+
+// Function to show video details modal
+function showVideoDetailsModal(title, views) {
+    // Handle undefined or null values
+    const safeTitle = title || 'Unknown Video';
+    let displayViews = 'N/A';
+    
+    // Handle different types of views data
+    if (views !== undefined && views !== null) {
+        if (typeof views === 'number') {
+            displayViews = views.toLocaleString();
+        } else if (typeof views === 'string') {
+            displayViews = views;
+        } else {
+            displayViews = String(views);
+        }
+    }
+    
+    // Create modal HTML
+    const modalHTML = `
+        <div class="modal fade" id="videoDetailsModal" tabindex="-1" role="dialog" aria-labelledby="videoDetailsModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="videoDetailsModalLabel">Video Details</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <h6 class="text-primary">Video Title:</h6>
+                                <p class="font-weight-bold">${safeTitle}</p>
+                            </div>
+                            <div class="col-12">
+                                <h6 class="text-primary">Views:</h6>
+                                <p class="font-weight-bold">${displayViews}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Remove existing modal if any
+    const existingModal = document.getElementById('videoDetailsModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    // Add modal to page
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    
+    // Show modal
+    $('#videoDetailsModal').modal('show');
 }
 
 // Load charts when the page is ready
