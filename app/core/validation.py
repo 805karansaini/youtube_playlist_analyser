@@ -79,7 +79,7 @@ class PlaylistUrlRequest(BaseModel):
             if "list" in query_params:
                 playlist_id = query_params["list"][0]
                 # YouTube playlist IDs are typically 13-34 characters and contain alphanumeric chars, hyphens, and underscores
-                if re.match(r"^[a-zA-Z0-9_-]{10,}$", playlist_id) and len(playlist_id.strip()) > 0:
+                if re.match(r"^[a-zA-Z0-9_-]{12,}$", playlist_id):
                     return playlist_id
 
         except Exception:
