@@ -1,7 +1,6 @@
 import re
 import time
 from datetime import timedelta
-from functools import lru_cache
 from typing import Any, Dict, List, Tuple
 
 from core.config import Config
@@ -431,24 +430,3 @@ class YouTubeService:
         self._video_cache.clear()
         self.logger.info("Service cache cleared")
 
-    def get_cache_info(self) -> Dict[str, Any]:
-        """Get information about cached data.
-
-        Returns:
-            Dictionary containing cache information.
-        """
-        current_time = time.time()
-
-        playlist_cache_info = []
-        for key, data in self._playlist_cache.items():
-            age = current_time - data["timestamp"]
-            playlist_cache_info.append(
-                {"key": key, "age_seconds": age, "expired": age > self.config.CACHE_TTL}
-            )
-
-        return {
-            "playlist_cache_entries": len(self._playlist_cache),
-            "video_cache_entries": len(self._video_cache),
-            "cache_ttl": self.config.CACHE_TTL,
-            "playlist_cache_details": playlist_cache_info,
-        }

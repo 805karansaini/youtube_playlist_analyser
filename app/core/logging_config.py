@@ -133,43 +133,6 @@ def get_logger(name: str) -> logging.Logger:
     return logging.getLogger(name)
 
 
-def log_api_call(
-    service: str,
-    operation: str,
-    playlist_id: Optional[str] = None,
-    duration_ms: Optional[float] = None,
-    error: Optional[str] = None,
-    **kwargs: Any,
-) -> None:
-    """Log API call with structured data.
-
-    Args:
-        service: Name of the service (e.g., 'youtube_api')
-        operation: Operation being performed (e.g., 'get_playlist_items')
-        playlist_id: YouTube playlist ID if applicable
-        duration_ms: Call duration in milliseconds
-        error: Error message if call failed
-        **kwargs: Additional structured data to log
-    """
-    logger = get_logger(__name__)
-
-    log_data = {
-        "event_type": "api_call",
-        "service": service,
-        "operation": operation,
-        "playlist_id": playlist_id,
-        "duration_ms": duration_ms,
-        "success": error is None,
-        **kwargs,
-    }
-
-    if error:
-        log_data["error"] = error
-        logger.error("API call failed", extra=log_data)
-    else:
-        logger.info("API call completed", extra=log_data)
-
-
 def log_business_event(
     event_type: str,
     playlist_id: Optional[str] = None,
