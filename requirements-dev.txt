@@ -1,0 +1,33 @@
+# Development dependencies - includes documentation generation tools
+-r requirements.txt
+
+# Documentation generation
+mkdocs==1.6.1
+mkdocs-autorefs==1.2.0
+mkdocs-get-deps==0.2.0
+mkdocs-material==9.5.47
+mkdocs-material-extensions==1.3.1
+mkdocs-minify-plugin==0.8.0
+mkdocstrings==0.27.0
+mkdocstrings-python==1.12.2
+
+# Documentation dependencies
+babel==2.16.0
+colorama==0.4.6
+csscompressor==0.9.5
+ghp-import==2.1.0
+griffe==1.5.1
+htmlmin2==0.1.13
+jsmin==3.0.1
+Markdown==3.7
+mergedeep==1.3.4
+pathspec==0.12.1
+Pygments==2.18.0
+pymdown-extensions==10.12
+PyYAML==6.0.2
+pyyaml_env_tag==0.1
+watchdog==6.0.0
+
+# Other development tools
+paginate==0.5.7
+regex==2024.11.6
