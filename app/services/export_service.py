@@ -6,7 +6,7 @@ CSV, Excel, JSON, and provides data preparation for visualization.
 
 import json
 import io
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, Any, List, Optional
 import pandas as pd
 from openpyxl import Workbook
@@ -125,7 +125,7 @@ class ExportService:
             # Prepare the data for JSON export
             export_data = {
                 "metadata": {
-                    "export_timestamp": datetime.utcnow().isoformat() + "Z",
+                    "export_timestamp": datetime.now(timezone.utc).isoformat(),
                     "playlist_id": analysis_data.get(
                         "playlist_id", analysis_summary.get("playlist_id")
                     ),
@@ -315,7 +315,7 @@ class ExportService:
                     "total_comments", nested_data.get("total_comments", 0)
                 ),
             ],
-            ["Export Timestamp", datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")],
+            ["Export Timestamp", datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")],
         ]
 
         return pd.DataFrame(summary_data[1:], columns=summary_data[0])

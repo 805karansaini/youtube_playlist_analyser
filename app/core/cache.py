@@ -4,7 +4,7 @@ This module provides a caching mechanism for reducing API calls.
 """
 
 from functools import wraps
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, Callable
 
 
@@ -39,7 +39,7 @@ class Cache:
         """
         if key in self.cache:
             entry = self.cache[key]
-            if datetime.now() < entry["expiry"]:
+            if datetime.now(timezone.utc) < entry["expiry"]:
                 return entry["value"]
             else:
                 del self.cache[key]
@@ -52,7 +52,7 @@ class Cache:
             key: The cache key.
             value: The value to cache.
         """
-        expiry = datetime.now() + timedelta(seconds=self.ttl_seconds)
+        expiry = datetime.now(timezone.utc) + timedelta(seconds=self.ttl_seconds)
         self.cache[key] = {"value": value, "expiry": expiry}
 
 

@@ -95,7 +95,7 @@ def export_csv():
         output = io.BytesIO(csv_data)
         output.seek(0)
 
-        filename = f"playlist_analysis_{playlist_id}_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}.csv"
+        filename = f"playlist_analysis_{playlist_id}_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}.csv"
 
         return send_file(
             output, mimetype="text/csv", as_attachment=True, download_name=filename
@@ -170,7 +170,7 @@ def export_excel():
         output = io.BytesIO(excel_data)
         output.seek(0)
 
-        filename = f"playlist_analysis_{playlist_id}_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}.xlsx"
+        filename = f"playlist_analysis_{playlist_id}_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}.xlsx"
 
         return send_file(
             output,
@@ -249,7 +249,7 @@ def export_json():
         output = io.BytesIO(json_data)
         output.seek(0)
 
-        filename = f"playlist_analysis_{playlist_id}_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}.json"
+        filename = f"playlist_analysis_{playlist_id}_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}.json"
 
         return send_file(
             output,
