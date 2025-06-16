@@ -1,3 +1,13 @@
 .venv
 .env
 .vercel
+**/*.pyc
+**/*.pyo
+**/*.pyd
+**/*.pyw
+**/*.pyz
+**/*.pywz
+**/*.pyzw
+**/*.pyzwz
+userinput.py
+.cursor
