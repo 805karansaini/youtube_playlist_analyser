@@ -55,7 +55,7 @@
                                     <p class="text-muted mb-4">
                                         Raw data in comma-separated format. Perfect for spreadsheet applications and data analysis.
                                     </p>
-                                    <button class="btn btn-outline-success btn-lg btn-block" onclick="downloadFormat('csv')">
+                                    <button class="btn btn-outline-success btn-lg btn-block" onclick="downloadFormat('csv', event)">
                                         <i class="fas fa-download mr-2"></i> Download CSV
                                     </button>
                                 </div>
@@ -72,7 +72,7 @@
                                     <p class="text-muted mb-4">
                                         Formatted spreadsheet with charts and styling. Includes summary sheets and visualizations.
                                     </p>
-                                    <button class="btn btn-outline-success btn-lg btn-block" onclick="downloadFormat('excel')">
+                                    <button class="btn btn-outline-success btn-lg btn-block" onclick="downloadFormat('excel', event)">
                                         <i class="fas fa-download mr-2"></i> Download Excel
                                     </button>
                                 </div>
@@ -89,7 +89,7 @@
                                     <p class="text-muted mb-4">
                                         Structured data in JSON format. Ideal for developers and programmatic data processing.
                                     </p>
-                                    <button class="btn btn-outline-info btn-lg btn-block" onclick="downloadFormat('json')">
+                                    <button class="btn btn-outline-info btn-lg btn-block" onclick="downloadFormat('json', event)">
                                         <i class="fas fa-download mr-2"></i> Download JSON
                                     </button>
                                 </div>
@@ -246,7 +246,7 @@
     .hero-content {
         padding: 1rem 0;
     }
-    
+
     .display-5 {
         font-size: 2rem;
     }
@@ -270,7 +270,7 @@ function showStatus(message, type = 'info') {
     }
 }
 
-function downloadFormat(format) {
+function downloadFormat(format, event) {
     const playlistId = '{{ playlist_id }}';
     const analysisType = document.getElementById('analysisType').value;
     const prettyJson = document.getElementById('prettyJson').checked;

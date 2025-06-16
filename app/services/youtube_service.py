@@ -409,17 +409,7 @@ class YouTubeService:
             seconds=int(seconds.group(1)) if seconds else 0,
         ).total_seconds()
 
-    @lru_cache(maxsize=1000)
-    def _parse_duration_cached(self, duration: str) -> float:
-        """Cached version of duration parsing for better performance.
 
-        Args:
-            duration (str): Duration string in ISO 8601 format.
-
-        Returns:
-            float: Duration in seconds.
-        """
-        return self._parse_duration(duration)
 
     def get_service_statistics(self) -> Dict[str, Any]:
         """Get service usage statistics.

@@ -5,7 +5,7 @@ This module provides model classes for representing videos with enhanced validat
 
 from datetime import datetime
 from typing import Optional
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 
 
 class Video(BaseModel):
@@ -46,13 +46,16 @@ class Video(BaseModel):
         validate_assignment = True
         extra = "forbid"
 
-    @validator("duration_seconds")
-    def validate_duration(cls, v):
+    @field_validator("duration_seconds")
+    @classmethod
+    def validate_duration(cls, v: float) -> float:
         """Validate that duration is reasonable."""
         if v < 0:
             raise ValueError("Duration cannot be negative")
-        if v > 24 * 3600:  # More than 24 hours seems unreasonable
-            raise ValueError("Duration seems too long (>24 hours)")
+
+        # Maximum reasonable duration is now 30 days
+        if v > 30 * 24 * 3600:  # More than 30 days seems unreasonable
+            raise ValueError("Duration seems too long (>30 days)")
         return v
 
     @property
