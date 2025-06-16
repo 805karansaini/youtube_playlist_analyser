@@ -4,10 +4,10 @@ This module provides Pydantic models for validating user inputs and API requests
 ensuring data integrity and security throughout the application.
 """
 
+import html
 import re
-from typing import Any, Dict, List, Optional, Type
+from typing import Any, Dict, Optional, Type
 from urllib.parse import parse_qs, urlparse
-from datetime import datetime, timezone
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -38,6 +38,9 @@ class PlaylistUrlRequest(BaseModel):
         """
         # Remove extra whitespace and normalize
         url = v.strip()
+
+        # Decode HTML entities (e.g., &amp; -> &)
+        url = html.unescape(url)
 
         # Check if URL is from YouTube domain
         try:
@@ -75,7 +78,7 @@ class PlaylistUrlRequest(BaseModel):
             # Check for playlist parameter
             if "list" in query_params:
                 playlist_id = query_params["list"][0]
-                # A valid playlist ID is at least 12 characters (video IDs are 11) and contains only permitted chars
+                # YouTube playlist IDs are typically 13-34 characters and contain alphanumeric chars, hyphens, and underscores
                 if re.match(r"^[a-zA-Z0-9_-]{12,}$", playlist_id):
                     return playlist_id
 
@@ -91,116 +94,6 @@ class PlaylistUrlRequest(BaseModel):
             Playlist ID extracted from the URL
         """
         return self.extract_playlist_id(self.url)
-
-
-class PlaylistAnalysisRequest(BaseModel):
-    """Request model for playlist analysis parameters."""
-
-    playlist_url: str = Field(..., description="YouTube playlist URL to analyze")
-
-    analysis_type: str = Field(
-        default="basic",
-        description="Type of analysis to perform",
-        pattern="^(basic|detailed|trends|sentiment|enhanced)$",
-    )
-
-    max_videos: Optional[int] = Field(
-        default=None, description="Maximum number of videos to analyze", ge=1, le=1000
-    )
-
-    include_metadata: bool = Field(
-        default=True, description="Include video metadata in analysis"
-    )
-
-    @field_validator("playlist_url")
-    @classmethod
-    def validate_playlist_url(cls, v: str) -> str:
-        """Validate playlist URL using PlaylistUrlRequest."""
-        url_request = PlaylistUrlRequest(url=v)
-        return url_request.url
-
-
-class VideoMetadata(BaseModel):
-    """Model for video metadata validation."""
-
-    video_id: str = Field(..., min_length=11, max_length=11)
-    title: str = Field(..., min_length=1, max_length=200)
-    description: Optional[str] = Field(default=None, max_length=5000)
-    duration: Optional[str] = Field(default=None)
-    view_count: Optional[int] = Field(default=None, ge=0)
-    like_count: Optional[int] = Field(default=None, ge=0)
-    published_at: Optional[str] = Field(default=None)
-    channel_title: Optional[str] = Field(default=None, max_length=100)
-
-    @field_validator("video_id")
-    @classmethod
-    def validate_video_id(cls, v: str) -> str:
-        """Validate YouTube video ID format."""
-        if not re.match(r"^[a-zA-Z0-9_-]{11}$", v):
-            raise ValueError("Invalid YouTube video ID format")
-        return v
-
-    @field_validator("title", "description", "channel_title")
-    @classmethod
-    def sanitize_text_fields(cls, v: Optional[str]) -> Optional[str]:
-        """Sanitize text fields to prevent XSS and injection attacks."""
-        if v is None:
-            return v
-
-        # Remove potentially dangerous characters
-        sanitized = re.sub(r'[<>"\'\&]', "", v.strip())
-        return sanitized if sanitized else None
-
-
-class PlaylistMetadata(BaseModel):
-    """Model for playlist metadata validation."""
-
-    playlist_id: str = Field(..., min_length=12, max_length=50)
-    title: str = Field(..., min_length=1, max_length=200)
-    description: Optional[str] = Field(default=None, max_length=5000)
-    channel_title: Optional[str] = Field(default=None, max_length=100)
-    video_count: int = Field(..., ge=0, le=10000)
-    videos: List[VideoMetadata] = Field(default_factory=list)
-
-    @field_validator("playlist_id")
-    @classmethod
-    def validate_playlist_id(cls, v: str) -> str:
-        """Validate YouTube playlist ID format."""
-        # Accept any playlist ID that has at least 12 characters (video IDs are 11)
-        if not re.match(r"^[a-zA-Z0-9_-]{12,}$", v):
-            raise ValueError("Invalid YouTube playlist ID format")
-        return v
-
-    @field_validator("title", "description", "channel_title")
-    @classmethod
-    def sanitize_text_fields(cls, v: Optional[str]) -> Optional[str]:
-        """Sanitize text fields to prevent XSS and injection attacks."""
-        if v is None:
-            return v
-
-        # Remove potentially dangerous characters
-        sanitized = re.sub(r'[<>"\'\&]', "", v.strip())
-        return sanitized if sanitized else None
-
-
-class AnalysisResult(BaseModel):
-    """Model for analysis result validation."""
-
-    playlist_id: str
-    analysis_type: str
-    video_count: int = Field(ge=0)
-    total_duration: Optional[str] = None
-    average_duration: Optional[str] = None
-    total_views: Optional[int] = Field(default=None, ge=0)
-    total_likes: Optional[int] = Field(default=None, ge=0)
-    top_videos: Optional[List[Dict[str, Any]]] = None
-    summary: Optional[str] = Field(default=None, max_length=1000)
-
-    class Config:
-        """Pydantic configuration."""
-
-        validate_assignment = True
-        extra = "forbid"  # Forbid extra fields
 
 
 class ErrorResponse(BaseModel):
@@ -315,16 +208,6 @@ class JsonExportRequest(ExportRequest):
 
 
 # Response Models
-class SuccessResponse(BaseModel):
-    """Standard success response model."""
-
-    success: bool = Field(default=True, description="Operation success status")
-    message: Optional[str] = Field(default=None, description="Success message")
-    data: Optional[Dict[str, Any]] = Field(default=None, description="Response data")
-
-    class Config:
-        extra = "allow"
-
 
 class ChartDataResponse(BaseModel):
     """Response model for chart data endpoint."""
@@ -346,41 +229,6 @@ class ExportFormatsResponse(BaseModel):
         ..., description="Available export formats"
     )
     chart_data_endpoint: str = Field(..., description="Chart data API endpoint")
-
-    class Config:
-        extra = "forbid"
-
-
-class PlaylistAnalysisResponse(BaseModel):
-    """Response model for playlist analysis results."""
-
-    playlist_id: str = Field(..., description="YouTube playlist ID")
-    title: Optional[str] = Field(default=None, description="Playlist title")
-    channel_title: Optional[str] = Field(default=None, description="Channel name")
-    video_count: int = Field(..., ge=0, description="Number of videos")
-    total_duration: str = Field(..., description="Total playlist duration")
-    average_duration: str = Field(..., description="Average video duration")
-    total_views: Optional[int] = Field(
-        default=None, ge=0, description="Total view count"
-    )
-    total_likes: Optional[int] = Field(
-        default=None, ge=0, description="Total like count"
-    )
-    playback_speeds: Dict[str, str] = Field(
-        ..., description="Durations at different speeds"
-    )
-    top_videos: List[Dict[str, Any]] = Field(
-        default_factory=list, description="Top performing videos"
-    )
-    chart_data: Dict[str, Any] = Field(
-        default_factory=dict, description="Chart visualization data"
-    )
-    analysis_type: str = Field(
-        default="basic", description="Type of analysis performed"
-    )
-    generated_at: str = Field(
-        default_factory=lambda: datetime.now(timezone.utc).isoformat()
-    )
 
     class Config:
         extra = "forbid"

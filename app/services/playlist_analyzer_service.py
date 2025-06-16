@@ -34,14 +34,6 @@ class PlaylistAnalyzerService:
         self.strategy = strategy or StandardAnalysisStrategy()
         self.logger = logging.getLogger(__name__)
 
-    def set_strategy(self, strategy: AnalysisStrategy) -> None:
-        """Set the analysis strategy.
-
-        Args:
-            strategy: The analysis strategy to use.
-        """
-        self.strategy = strategy
-
     def analyze_playlist(self, playlist_url: str) -> Dict[str, Any]:
         """Analyze a YouTube playlist.
 

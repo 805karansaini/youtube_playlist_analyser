@@ -8,15 +8,12 @@ import threading
 from typing import Any, Dict, TypeVar, Callable
 from functools import wraps
 
-from adapters.youtube_api_adapter import YouTubeApiAdapter
 from core.config import Config
 from core.logging_config import get_logger
-from repositories.youtube_repository import YouTubeRepository
 from services.export_service import ExportService
 from services.playlist_analyzer_service import PlaylistAnalyzerService
 from services.youtube_analytics_service import YouTubeAnalyticsService
 from services.youtube_service import YouTubeService
-from strategies.analysis_strategy import StandardAnalysisStrategy
 from strategies.enhanced_analysis_strategy import EnhancedAnalysisStrategy
 
 T = TypeVar("T")
@@ -89,28 +86,6 @@ class Container:
         return Config()
 
     @singleton_with_lock
-    def get_youtube_adapter(self) -> YouTubeApiAdapter:
-        """Get or create a YouTubeApiAdapter instance.
-
-        Returns:
-            A YouTubeApiAdapter instance.
-        """
-        config = self.get_config()
-        return YouTubeApiAdapter(
-            api_key=config.YOUTUBE_API_KEY, api_version=config.YOUTUBE_API_VERSION
-        )
-
-    @singleton_with_lock
-    def get_youtube_repository(self) -> YouTubeRepository:
-        """Get or create a YouTubeRepository instance.
-
-        Returns:
-            A YouTubeRepository instance.
-        """
-        adapter = self.get_youtube_adapter()
-        return YouTubeRepository(adapter.client)
-
-    @singleton_with_lock
     def get_youtube_service(self) -> YouTubeService:
         """Get or create a YouTubeService instance.
 
@@ -140,14 +115,6 @@ class Container:
         youtube_analytics_service = self.get_youtube_analytics_service()
         return EnhancedAnalysisStrategy(youtube_analytics_service)
 
-    @singleton_with_lock
-    def get_standard_analysis_strategy(self) -> StandardAnalysisStrategy:
-        """Get or create a StandardAnalysisStrategy instance.
-
-        Returns:
-            A StandardAnalysisStrategy instance.
-        """
-        return StandardAnalysisStrategy()
 
     @singleton_with_lock
     def get_playlist_analyzer_service(self) -> PlaylistAnalyzerService:
