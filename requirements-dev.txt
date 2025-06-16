@@ -28,6 +28,13 @@ PyYAML==6.0.2
 pyyaml_env_tag==0.1
 watchdog==6.0.0
 
+# Code quality and development tools
+black==24.10.0
+isort==5.13.2
+pre-commit==4.0.1
+pytest==8.3.3
+pytest-cov==6.0.0
+
 # Other development tools
 paginate==0.5.7
 regex==2024.11.6

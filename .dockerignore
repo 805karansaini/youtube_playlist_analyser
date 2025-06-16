@@ -1,1 +1,60 @@
-.venv
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Git
+.git/
+.gitignore
+
+# Documentation
+docs/
+*.md
+!readme.md
+
+# Tests
+tests/
+
+# Development dependencies
+requirements-dev.txt
+
+# Additional optimization excludes
+*.pyc
+.pytest_cache/
+.coverage
+.tox/
+.mypy_cache/
+.ruff_cache/
+
+# Docker files
+Dockerfile*
+docker-compose*.yml
+docker-compose*.yaml
+
+# Environment files
+.env.example
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+build/
+dist/
+*.egg-info/

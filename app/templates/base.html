@@ -1,0 +1,1005 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no, viewport-fit=cover">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+
+    <style>
+        /* Modern CSS Reset and Base */
+        :root {
+            --primary-color: #667eea;
+            --primary-dark: #5a67d8;
+            --secondary-color: #764ba2;
+            --accent-color: #f093fb;
+            --success-color: #48bb78;
+            --warning-color: #ed8936;
+            --danger-color: #f56565;
+            --dark-color: #2d3748;
+            --light-color: #f7fafc;
+            --border-color: #e2e8f0;
+            --text-primary: #2d3748;
+            --text-secondary: #4a5568;
+            --text-muted: #718096;
+            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --border-radius: 0.5rem;
+            --border-radius-lg: 0.75rem;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 0;
+            padding-top: 76px; /* Space for fixed navbar */
+            min-height: 100vh;
+        }
+
+        /* Main container that holds everything */
+        .main-container {
+            min-height: calc(100vh - 76px); /* Full height minus navbar */
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Layout Structure */
+        .page-wrapper {
+            background: white;
+            border-radius: 1rem 1rem 0 0;
+            box-shadow: var(--shadow-lg);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content-wrapper {
+            flex: 1;
+            padding: 2rem 0;
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: var(--shadow-md);
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary-color) !important;
+        }
+
+        .navbar-nav .nav-link {
+            color: var(--text-primary) !important;
+            font-weight: 500;
+            padding: 0.5rem 1rem !important;
+            border-radius: var(--border-radius);
+            transition: all 0.3s ease;
+        }
+
+        .navbar-nav .nav-link:hover {
+            background: var(--primary-color);
+            color: white !important;
+            transform: translateY(-1px);
+        }
+
+        .dropdown-menu {
+            border: none;
+            box-shadow: var(--shadow-lg);
+            border-radius: var(--border-radius);
+        }
+
+        .dropdown-item {
+            padding: 0.75rem 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-item:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* Custom Navbar Toggler */
+        .custom-toggler {
+            border: 2px solid var(--primary-color) !important;
+            border-radius: 0.5rem !important;
+            padding: 0.375rem 0.75rem !important;
+            background: rgba(255, 255, 255, 0.9) !important;
+            transition: all 0.3s ease !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+        }
+
+        .custom-toggler:focus {
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25), 0 2px 4px rgba(0,0,0,0.1) !important;
+            outline: none !important;
+            border-color: var(--primary-dark) !important;
+        }
+
+        .custom-toggler:hover {
+            background: var(--primary-color) !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15) !important;
+        }
+
+        .custom-toggler .navbar-toggler-icon {
+            background-image: url('data:image/svg+xml,%3csvg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"%3e%3cpath stroke="%23667eea" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2.5" d="M3 6h18M3 12h18M3 18h18"/%3e%3c/svg%3e') !important;
+            width: 1.25rem !important;
+            height: 1.25rem !important;
+        }
+
+        .custom-toggler:hover .navbar-toggler-icon {
+            background-image: url('data:image/svg+xml,%3csvg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"%3e%3cpath stroke="%23ffffff" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2.5" d="M3 6h18M3 12h18M3 18h18"/%3e%3c/svg%3e') !important;
+        }
+
+        /* Active state for toggler */
+        .custom-toggler[aria-expanded="true"] {
+            background: var(--primary-color) !important;
+            transform: rotate(90deg) !important;
+        }
+
+        .custom-toggler[aria-expanded="true"] .navbar-toggler-icon {
+            background-image: url('data:image/svg+xml,%3csvg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"%3e%3cpath stroke="%23ffffff" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2.5" d="M18 6L6 18M6 6l12 12"/%3e%3c/svg%3e') !important;
+        }
+
+        /* Mobile navbar collapse styling */
+        .navbar-collapse {
+            border-top: 1px solid var(--border-color);
+            margin-top: 1rem;
+            padding-top: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .navbar-collapse {
+                border-top: none;
+                margin-top: 0;
+                padding-top: 0;
+            }
+        }
+
+        /* Chart Containers */
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: 2rem 0;
+            background: white;
+            border-radius: var(--border-radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+        }
+
+        /* Export Section */
+        .export-section {
+            background: linear-gradient(135deg, var(--light-color) 0%, #edf2f7 100%);
+            padding: 2rem;
+            border-radius: var(--border-radius-lg);
+            margin: 2rem 0;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .export-btn {
+            margin: 0.25rem;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Analytics Grid */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .metric-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg);
+            padding: 2rem;
+            text-align: center;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+        }
+
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-size: 0.875rem;
+        }
+
+        /* Tab Styling */
+        .nav-tabs {
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 2rem;
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            padding: 1rem 1.5rem;
+            margin-right: 0.5rem;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tabs .nav-link.active {
+            background: var(--primary-color);
+            color: white;
+            border-bottom: 3px solid var(--primary-dark);
+        }
+
+        .nav-tabs .nav-link:hover {
+            background: var(--light-color);
+            color: var(--primary-color);
+        }
+
+        .tab-content {
+            padding: 1rem 0;
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 3rem;
+            background: white;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+            margin: 2rem 0;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+
+        /* Messages */
+        .error-message, .success-message {
+            padding: 1rem 1.5rem;
+            border-radius: var(--border-radius);
+            margin: 1rem 0;
+            font-weight: 500;
+            border-left: 4px solid;
+        }
+
+        .error-message {
+            background: #fed7d7;
+            color: #c53030;
+            border-left-color: var(--danger-color);
+        }
+
+        .success-message {
+            background: #c6f6d5;
+            color: #2f855a;
+            border-left-color: var(--success-color);
+        }
+
+        /* Card Improvements */
+        .card {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-bottom: none;
+            font-weight: 600;
+            padding: 1.25rem 1.5rem;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        /* Button Improvements */
+        .btn {
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.3s ease;
+            text-transform: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            border: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Form Improvements */
+        .form-control {
+            border-radius: var(--border-radius);
+            border: 2px solid var(--border-color);
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, #667eea, #764ba2) !important;
+            border-radius: 0;
+            position: relative;
+            width: 100%;
+            margin-top: auto;
+        }
+
+        .footer a {
+            color: #cbd5e0 !important;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: var(--accent-color) !important;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 70px;
+            }
+            
+            .page-wrapper {
+                margin-top: 0;
+                border-radius: 0;
+            }
+
+            .content-wrapper {
+                padding: 1rem 0;
+            }
+
+            .analytics-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .metric-card {
+                padding: 1.5rem;
+            }
+
+            .metric-value {
+                font-size: 2rem;
+            }
+
+            .chart-container {
+                height: 300px;
+                padding: 1rem;
+            }
+            
+            .navbar {
+                padding: 0.5rem 0;
+            }
+            
+            .navbar-brand {
+                font-size: 1.2rem;
+            }
+            
+            .container {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            
+            .footer {
+                padding: 1rem 0 !important;
+            }
+            
+            .footer .row {
+                flex-direction: column !important;
+                text-align: center !important;
+                align-items: center !important;
+            }
+            
+            .footer .col-md-6 {
+                margin-bottom: 0.5rem !important;
+                width: 100% !important;
+                max-width: none !important;
+                text-align: center !important;
+            }
+            
+            .footer h6 {
+                font-size: 0.9rem !important;
+                margin-bottom: 0.25rem !important;
+            }
+            
+            .footer p {
+                margin-bottom: 0.5rem !important;
+                font-size: 0.8rem !important;
+            }
+            
+            .footer .social-links {
+                margin-top: 0.5rem !important;
+                margin-bottom: 0.25rem !important;
+                display: block !important;
+            }
+            
+            .footer .social-links a {
+                margin: 0 0.5rem !important;
+                font-size: 1.1rem !important;
+                display: inline-block !important;
+                color: #cbd5e0 !important;
+            }
+            
+            .footer small {
+                font-size: 0.7rem !important;
+                margin-top: 0.25rem !important;
+                display: block !important;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            body {
+                padding-top: 65px;
+            }
+            
+            .navbar-brand {
+                font-size: 1rem;
+            }
+            
+            .navbar-brand span {
+                display: none;
+            }
+            
+            .navbar-brand::after {
+                content: "Analyzer";
+            }
+            
+            /* Mobile navigation improvements */
+            .navbar-nav {
+                text-align: center;
+                background: rgba(255, 255, 255, 0.98);
+                border-radius: 0.5rem;
+                padding: 0.5rem;
+                margin-top: 0.5rem;
+                box-shadow: var(--shadow-md);
+            }
+            
+            .navbar-nav .nav-item {
+                margin: 0.25rem 0;
+            }
+            
+            .navbar-nav .nav-link {
+                padding: 0.75rem 1rem !important;
+                border-radius: 0.375rem !important;
+                font-weight: 500 !important;
+            }
+            
+            .dropdown-menu {
+                position: static !important;
+                float: none !important;
+                width: 100% !important;
+                margin-top: 0.5rem !important;
+                border: 1px solid var(--border-color) !important;
+                box-shadow: var(--shadow-sm) !important;
+            }
+            
+            .dropdown-toggle::after {
+                display: none !important;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* Utility Classes */
+        .text-gradient {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Mobile Footer Fix - Show only social links */
+        @media screen and (max-width: 768px) {
+            .footer {
+                padding: 1rem 0 !important;
+                min-height: 60px !important;
+                display: flex !important;
+                align-items: center !important;
+            }
+            
+            .desktop-footer-content {
+                display: none !important;
+            }
+            
+            .mobile-footer-content {
+                display: block !important;
+                width: 100% !important;
+            }
+            
+            .mobile-footer-content .social-links {
+                margin: 0 !important;
+                display: flex !important;
+                justify-content: center !important;
+                align-items: center !important;
+                height: 100% !important;
+            }
+            
+            .mobile-footer-content .social-links a {
+                margin: 0 1.5rem !important;
+                color: #cbd5e0 !important;
+                transition: color 0.3s ease, transform 0.3s ease;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                line-height: 1 !important;
+            }
+            
+            .mobile-footer-content .social-links a:hover {
+                color: var(--accent-color) !important;
+                transform: translateY(-2px);
+            }
+            
+            .mobile-footer-content .social-links a i {
+                font-size: 1.5rem !important;
+                line-height: 1 !important;
+            }
+        }
+    </style>
+
+    <title>{% block title %}YouTube Playlist Analyzer{% endblock %}</title>
+    <link rel="icon" href="{{ url_for('static', filename='logo_title.jpeg') }}">
+    
+    <!-- PWA Support -->
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Playlist Analyzer">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='logo_title.jpeg') }}">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:title" content="YouTube Playlist Analyzer">
+    <meta property="og:description" content="Analyze YouTube playlists instantly. Get detailed insights about video durations, view counts, engagement metrics, and export comprehensive reports.">
+    <meta property="og:image" content="{{ url_for('static', filename='logo_title.jpeg', _external=True) }}">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ request.url }}">
+    <meta property="twitter:title" content="YouTube Playlist Analyzer">
+    <meta property="twitter:description" content="Analyze YouTube playlists instantly. Get detailed insights about video durations, view counts, engagement metrics, and export comprehensive reports.">
+    <meta property="twitter:image" content="{{ url_for('static', filename='logo_title.jpeg', _external=True) }}">
+</head>
+
+<body>
+    <header class="site-header">
+        <nav class="navbar navbar-expand-md fixed-top">
+            <div class="container">
+                <a class="navbar-brand mr-4" href="{{ url_for('home.home') }}">
+                    <i class="fab fa-youtube text-danger mr-2"></i>
+                    <span class="text-gradient">Playlist Analyzer</span>
+                </a>
+                <button class="navbar-toggler custom-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" 
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="exportDropdown" role="button" data-toggle="dropdown">
+                                <i class="fas fa-download mr-1"></i> Export Data
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <h6 class="dropdown-header"><i class="fas fa-file-export"></i> Export Formats</h6>
+                                <a class="dropdown-item" href="#" onclick="exportData('csv')">
+                                    <i class="fas fa-file-csv text-success mr-2"></i> CSV Format
+                                </a>
+                                <a class="dropdown-item" href="#" onclick="exportData('excel')">
+                                    <i class="fas fa-file-excel text-success mr-2"></i> Excel Spreadsheet
+                                </a>
+                                <a class="dropdown-item" href="#" onclick="exportData('json')">
+                                    <i class="fas fa-file-code text-info mr-2"></i> JSON Data
+                                </a>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="https://github.com/805karansaini/youtube_playlist_analyser" target="_blank" 
+                               title="View Source Code">
+                                <i class="fab fa-github mr-1"></i> Source
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="main-container">
+        <div class="page-wrapper">
+            <main class="content-wrapper">
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+        
+        <footer class="footer">
+            <div class="container py-4">
+                <div class="row align-items-center">
+                    <div class="col-md-6 text-center text-md-left desktop-footer-content">
+                        <h6 class="mb-2" style="color: #e2e8f0; font-weight: 600;">
+                            <i class="fab fa-youtube text-danger mr-2"></i>
+                            YouTube Playlist Analyzer
+                        </h6>
+                        <p class="mb-0" style="color: #a0aec0; font-size: 0.9rem;">
+                            Made with <i class="fas fa-heart text-danger mx-1"></i> by 
+                            <a href="https://github.com/805karansaini/" target="_blank">Karan Saini</a>
+                        </p>
+                    </div>
+                    <div class="col-md-6 text-center text-md-right mt-3 mt-md-0 desktop-footer-content">
+                        <div class="social-links">
+                            <a href="https://github.com/805karansaini" target="_blank" class="mr-3" title="GitHub Profile">
+                                <i class="fab fa-github fa-lg"></i>
+                            </a>
+                            <a href="https://www.linkedin.com/in/805karansaini/" target="_blank" class="mr-3" title="LinkedIn Profile">
+                                <i class="fab fa-linkedin fa-lg"></i>
+                            </a>
+                            <a href="https://github.com/805karansaini/youtube_playlist_analyser" target="_blank" title="Source Code">
+                                <i class="fas fa-code fa-lg"></i>
+                            </a>
+                        </div>
+                        <div class="mt-2">
+                            <small style="color: #718096;">
+                                © 2024 | Open Source Project
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <!-- Mobile-only footer content -->
+                    <div class="col-12 text-center mobile-footer-content" style="display: none;">
+                        <div class="social-links">
+                            <a href="https://github.com/805karansaini" target="_blank" class="mx-3" title="GitHub Profile">
+                                <i class="fab fa-github fa-2x"></i>
+                            </a>
+                            <a href="https://www.linkedin.com/in/805karansaini/" target="_blank" class="mx-3" title="LinkedIn Profile">
+                                <i class="fab fa-linkedin fa-2x"></i>
+                            </a>
+                            <a href="https://github.com/805karansaini/youtube_playlist_analyser" target="_blank" class="mx-3" title="Source Code">
+                                <i class="fas fa-code fa-2x"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+    <script>
+        // PWA Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(function(registration) {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                        
+                        // Check for updates
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    // New update available
+                                    if (confirm('New version available! Reload to update?')) {
+                                        window.location.reload();
+                                    }
+                                }
+                            });
+                        });
+                    })
+                    .catch(function(err) {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
+        }
+
+        // PWA Install Prompt
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent Chrome 67 and earlier from automatically showing the prompt
+            e.preventDefault();
+            // Stash the event so it can be triggered later.
+            deferredPrompt = e;
+            
+            // Show install button/banner
+            showInstallPromotion();
+        });
+
+        function showInstallPromotion() {
+            const installBanner = document.createElement('div');
+            installBanner.innerHTML = `
+                <div class="alert alert-info alert-dismissible fade show position-fixed" 
+                     style="top: 80px; right: 20px; z-index: 9999; max-width: 300px;">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-mobile-alt mr-2"></i>
+                        <div class="flex-grow-1">
+                            <strong>Install App</strong><br>
+                            <small>Add to your home screen for a better experience!</small>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <button class="btn btn-primary btn-sm mr-2" onclick="installPWA()">Install</button>
+                        <button class="btn btn-secondary btn-sm" onclick="dismissInstallPrompt()">Later</button>
+                    </div>
+                    <button type="button" class="close" onclick="dismissInstallPrompt()">
+                        <span>&times;</span>
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(installBanner);
+        }
+
+        window.installPWA = function() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted the install prompt');
+                    }
+                    deferredPrompt = null;
+                    dismissInstallPrompt();
+                });
+            }
+        };
+
+        window.dismissInstallPrompt = function() {
+            const banner = document.querySelector('.alert');
+            if (banner) {
+                banner.remove();
+            }
+        };
+
+        // Track PWA usage
+        window.addEventListener('appinstalled', (evt) => {
+            console.log('PWA was installed');
+        });
+
+        // Mobile footer fix - show only social links
+        function fixMobileFooter() {
+            if (window.innerWidth <= 768) {
+                const footer = document.querySelector('.footer');
+                if (footer) {
+                    // Hide desktop content and show mobile content
+                    const desktopContent = footer.querySelectorAll('.desktop-footer-content');
+                    const mobileContent = footer.querySelector('.mobile-footer-content');
+                    
+                    desktopContent.forEach(el => {
+                        el.style.display = 'none';
+                    });
+                    
+                    if (mobileContent) {
+                        mobileContent.style.display = 'block';
+                        mobileContent.style.width = '100%';
+                    }
+                    
+                    // Apply mobile footer styling for proper centering
+                    footer.style.cssText += 'padding: 1rem 0 !important; min-height: 60px !important; display: flex !important; align-items: center !important;';
+                    
+                    // Center the social links
+                    const socialLinks = mobileContent.querySelector('.social-links');
+                    if (socialLinks) {
+                        socialLinks.style.cssText += 'display: flex !important; justify-content: center !important; align-items: center !important; margin: 0 !important;';
+                        
+                        const links = socialLinks.querySelectorAll('a');
+                        links.forEach(link => {
+                            link.style.cssText += 'margin: 0 1.5rem !important; display: flex !important; align-items: center !important; justify-content: center !important; line-height: 1 !important; color: #cbd5e0 !important;';
+                            
+                            const icon = link.querySelector('i');
+                            if (icon) {
+                                icon.style.cssText += 'font-size: 1.5rem !important; line-height: 1 !important;';
+                            }
+                        });
+                    }
+                }
+            } else {
+                // Show desktop content and hide mobile content for larger screens
+                const footer = document.querySelector('.footer');
+                if (footer) {
+                    const desktopContent = footer.querySelectorAll('.desktop-footer-content');
+                    const mobileContent = footer.querySelector('.mobile-footer-content');
+                    
+                    desktopContent.forEach(el => {
+                        el.style.display = '';
+                    });
+                    
+                    if (mobileContent) {
+                        mobileContent.style.display = 'none';
+                    }
+                    
+                    // Reset footer styling for desktop
+                    footer.style.cssText = footer.style.cssText.replace(/padding: 1rem 0 !important; min-height: 60px !important; display: flex !important; align-items: center !important;/g, '');
+                }
+            }
+        }
+
+        // Mobile navigation improvements
+        document.addEventListener('DOMContentLoaded', function() {
+            // Apply mobile footer fix immediately and after a short delay
+            fixMobileFooter();
+            setTimeout(fixMobileFooter, 100);
+            setTimeout(fixMobileFooter, 500);
+            
+            // Re-apply on window resize
+            window.addEventListener('resize', fixMobileFooter);
+            
+            const toggler = document.querySelector('.navbar-toggler');
+            const navbar = document.querySelector('.navbar-collapse');
+            
+            // Handle toggler animation
+            if (toggler && navbar) {
+                toggler.addEventListener('click', function() {
+                    // Toggle aria-expanded for CSS styling
+                    setTimeout(() => {
+                        const isExpanded = navbar.classList.contains('show');
+                        toggler.setAttribute('aria-expanded', isExpanded);
+                    }, 10);
+                });
+                
+                // Handle Bootstrap collapse events
+                $(navbar).on('shown.bs.collapse', function() {
+                    toggler.setAttribute('aria-expanded', 'true');
+                });
+                
+                $(navbar).on('hidden.bs.collapse', function() {
+                    toggler.setAttribute('aria-expanded', 'false');
+                });
+            }
+            
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', function(event) {
+                if (navbar && navbar.classList.contains('show') && 
+                    !navbar.contains(event.target) && 
+                    !toggler.contains(event.target)) {
+                    
+                    // Collapse the navbar
+                    $('.navbar-collapse').collapse('hide');
+                }
+            });
+
+            // Improve dropdown behavior on mobile
+            if (window.innerWidth <= 768) {
+                const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+                dropdownToggles.forEach(toggle => {
+                    toggle.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const dropdownMenu = this.nextElementSibling;
+                        
+                        // Toggle the dropdown
+                        if (dropdownMenu.style.display === 'block') {
+                            dropdownMenu.style.display = 'none';
+                        } else {
+                            // Hide all other dropdowns first
+                            document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                                menu.style.display = 'none';
+                            });
+                            dropdownMenu.style.display = 'block';
+                        }
+                    });
+                });
+            }
+
+            // Close navbar when nav link is clicked (for single page app behavior)
+            document.querySelectorAll('.nav-link:not(.dropdown-toggle)').forEach(link => {
+                link.addEventListener('click', function() {
+                    $('.navbar-collapse').collapse('hide');
+                });
+            });
+        });
+
+        // Fallback export function for when no analysis data is available
+        if (typeof window.exportData === 'undefined') {
+            window.exportData = function(format) {
+                alert('Please analyze a playlist first before exporting data.');
+            };
+        }
+    </script>
+
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>
