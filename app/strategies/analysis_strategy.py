@@ -4,7 +4,7 @@ This module provides strategy classes for different types of playlist analysis.
 """
 
 from abc import ABC, abstractmethod
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Optional
 
 
 class AnalysisStrategy(ABC):
@@ -20,7 +20,7 @@ class AnalysisStrategy(ABC):
         videos: List[Dict],
         total_seconds: float,
         video_count: int,
-        playlist_id: str = None,
+        playlist_id: Optional[str] = None,
     ) -> Dict[str, Any]:
         """Analyze playlist data.
 
@@ -49,7 +49,7 @@ class StandardAnalysisStrategy(AnalysisStrategy):
         videos: List[Dict],
         total_seconds: float,
         video_count: int,
-        playlist_id: str = None,
+        playlist_id: Optional[str] = None,
     ) -> Dict[str, Any]:
         """Analyze playlist data using the standard strategy.
 
@@ -69,17 +69,17 @@ class StandardAnalysisStrategy(AnalysisStrategy):
 
         # Sort videos by duration to find longest and shortest
         sorted_videos = sorted(
-            videos, key=lambda x: x["duration_minutes"], reverse=True
+            videos, key=lambda x: x.get("duration_seconds", x.get("duration_minutes", 0) * 60), reverse=True
         )
         longest_video = (
             sorted_videos[0]
             if sorted_videos
-            else {"title": "N/A", "duration_minutes": 0}
+            else {"title": "N/A", "duration_seconds": 0}
         )
         shortest_video = (
             sorted_videos[-1]
             if sorted_videos
-            else {"title": "N/A", "duration_minutes": 0}
+            else {"title": "N/A", "duration_seconds": 0}
         )
 
         # Calculate playback time at different speeds
@@ -103,12 +103,12 @@ class StandardAnalysisStrategy(AnalysisStrategy):
             "total_likes": sum(video.get("like_count", 0) for video in videos),
             "total_comments": sum(video.get("comment_count", 0) for video in videos),
             "longest_video": {
-                "title": longest_video["title"],
-                "duration": format_duration(longest_video["duration_minutes"] * 60),
+                "title": longest_video.get("title", "N/A"),
+                "duration": format_duration(longest_video.get("duration_seconds", longest_video.get("duration_minutes", 0) * 60)),
             },
             "shortest_video": {
-                "title": shortest_video["title"],
-                "duration": format_duration(shortest_video["duration_minutes"] * 60),
+                "title": shortest_video.get("title", "N/A"),
+                "duration": format_duration(shortest_video.get("duration_seconds", shortest_video.get("duration_minutes", 0) * 60)),
             },
             "playback_speeds": {
                 speed: format_duration(duration)
@@ -128,8 +128,8 @@ class StandardAnalysisStrategy(AnalysisStrategy):
 
         return {
             "chart_data": [
-                [video["title"] for video in videos],
-                [video["duration_minutes"] for video in videos],
+                [video.get("title", "") for video in videos],
+                [video.get("duration_seconds", video.get("duration_minutes", 0) * 60) / 60 for video in videos],
             ],
             "display_text": [
                 f"No of videos: {video_count}",

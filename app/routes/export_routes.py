@@ -6,6 +6,7 @@ in various formats including CSV, Excel, and JSON reports.
 
 import io
 from datetime import datetime, timezone
+from typing import cast
 
 from core.logging_config import get_logger, log_business_event
 from core.validation import (
@@ -56,14 +57,16 @@ def export_csv():
             return jsonify(error_response.model_dump()), 400
 
         try:
-            export_request = validate_request_data(data, ExportRequest)
-            playlist_id = export_request.playlist_url.split("list=")[-1].split("&")[0]
+            export_request = cast(ExportRequest, validate_request_data(data, ExportRequest))
+            # Use the robust URL validation method instead of fragile string splitting
+            url_request = PlaylistUrlRequest(url=export_request.playlist_url)
+            playlist_id = url_request.get_playlist_id()
         except ValidationError as e:
             logger.warning(f"CSV export validation error: {str(e)}")
             error_response = ErrorResponse(
                 error="Validation Error",
                 message="Invalid request data",
-                details=e.errors() if hasattr(e, "errors") else None,
+                details={"validation_errors": [str(err) for err in e.errors()]} if hasattr(e, "errors") else None,
             )
             return jsonify(error_response.model_dump()), 400
         except ValueError as e:
@@ -78,7 +81,7 @@ def export_csv():
             return jsonify(error_response.model_dump()), 400
 
         # Get services from container
-        container = current_app.container
+        container = current_app.container  # type: ignore
         analyzer_service = container.get_playlist_analyzer_service()
         export_service = container.get_export_service()
 
@@ -129,14 +132,16 @@ def export_excel():
             return jsonify(error_response.model_dump()), 400
 
         try:
-            export_request = validate_request_data(data, ExportRequest)
-            playlist_id = export_request.playlist_url.split("list=")[-1].split("&")[0]
+            export_request = cast(ExportRequest, validate_request_data(data, ExportRequest))
+            # Use the robust URL validation method instead of fragile string splitting
+            url_request = PlaylistUrlRequest(url=export_request.playlist_url)
+            playlist_id = url_request.get_playlist_id()
         except ValidationError as e:
             logger.warning(f"Excel export validation error: {str(e)}")
             error_response = ErrorResponse(
                 error="Validation Error",
                 message="Invalid request data",
-                details=e.errors() if hasattr(e, "errors") else None,
+                details={"validation_errors": [str(err) for err in e.errors()]} if hasattr(e, "errors") else None,
             )
             return jsonify(error_response.model_dump()), 400
         except ValueError as e:
@@ -151,7 +156,7 @@ def export_excel():
             return jsonify(error_response.model_dump()), 400
 
         # Get services from container
-        container = current_app.container
+        container = current_app.container  # type: ignore
         analyzer_service = container.get_playlist_analyzer_service()
         export_service = container.get_export_service()
 
@@ -206,14 +211,16 @@ def export_json():
             return jsonify(error_response.model_dump()), 400
 
         try:
-            export_request = validate_request_data(data, JsonExportRequest)
-            playlist_id = export_request.playlist_url.split("list=")[-1].split("&")[0]
+            export_request = cast(JsonExportRequest, validate_request_data(data, JsonExportRequest))
+            # Use the robust URL validation method instead of fragile string splitting
+            url_request = PlaylistUrlRequest(url=export_request.playlist_url)
+            playlist_id = url_request.get_playlist_id()
         except ValidationError as e:
             logger.warning(f"JSON export validation error: {str(e)}")
             error_response = ErrorResponse(
                 error="Validation Error",
                 message="Invalid request data",
-                details=e.errors() if hasattr(e, "errors") else None,
+                details={"validation_errors": [str(err) for err in e.errors()]} if hasattr(e, "errors") else None,
             )
             return jsonify(error_response.model_dump()), 400
         except ValueError as e:
@@ -228,7 +235,7 @@ def export_json():
             return jsonify(error_response.model_dump()), 400
 
         # Get services from container
-        container = current_app.container
+        container = current_app.container  # type: ignore
         analyzer_service = container.get_playlist_analyzer_service()
         export_service = container.get_export_service()
 
@@ -280,14 +287,14 @@ def get_chart_data():
         if not data:
             return jsonify({"error": "No JSON data provided"}), 400
 
-        url_request = validate_request_data(data, PlaylistUrlRequest)
+        url_request = cast(PlaylistUrlRequest, validate_request_data(data, PlaylistUrlRequest))
         playlist_id = url_request.get_playlist_id()
 
         if not playlist_id:
             return jsonify({"error": "Invalid playlist URL"}), 400
 
         # Get services from container
-        container = current_app.container
+        container = current_app.container  # type: ignore
         analyzer_service = container.get_playlist_analyzer_service()
         export_service = container.get_export_service()
 

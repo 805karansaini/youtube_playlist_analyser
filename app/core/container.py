@@ -36,6 +36,8 @@ def singleton_with_lock(func: Callable[..., T]) -> Callable[..., T]:
                     try:
                         instance = func(self, *args, **kwargs)
                         self._instances[service_name] = instance
+                        # Track creation order for proper shutdown
+                        self._creation_order.append(service_name)
                         self.logger.debug(f"Created singleton instance: {service_name}")
                     except Exception as e:
                         self.logger.error(f"Failed to create {service_name}: {str(e)}")
