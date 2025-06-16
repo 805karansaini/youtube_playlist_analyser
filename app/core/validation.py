@@ -397,6 +397,7 @@ def extract_youtube_video_id(url: str) -> Optional[str]:
     """
     try:
         parsed = urlparse(url)
+        video_id = None
 
         # Handle different YouTube URL formats
         if parsed.netloc in ["www.youtube.com", "youtube.com", "m.youtube.com"]:
@@ -413,8 +414,8 @@ def extract_youtube_video_id(url: str) -> Optional[str]:
         else:
             return None
 
-        # Validate video ID format
-        if re.match(r"^[a-zA-Z0-9_-]{11}$", video_id):
+        # Validate video ID format (only if video_id was successfully extracted)
+        if video_id and re.match(r"^[a-zA-Z0-9_-]{11}$", video_id):
             return video_id
 
     except Exception:
